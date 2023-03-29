@@ -1,4 +1,4 @@
-# About_Streamlit.py
+# Streamlit.py
 
 # streamlit run pages/Test_Page.py
 
