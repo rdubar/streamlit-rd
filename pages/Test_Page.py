@@ -1,6 +1,6 @@
 # About_Streamlit.py
 
-# /Users/roger/.virtualenvs/streamlit-rd/bin/streamlit run /Users/roger/PycharmProjects/streamlit-rd/pages/Test_Page.py
+# streamlit run pages/Test_Page.py
 
 
 import streamlit as st
