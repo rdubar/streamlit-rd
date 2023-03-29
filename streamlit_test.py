@@ -1,6 +1,6 @@
 import streamlit as st
 '''
-streamlit run /Users/roger/PycharmProjects/streamlit-rd/streamlit-test.py
+streamlit run /Users/roger/PycharmProjects/streamlit-rd/streamlit_test.py
 '''
 st.text('Fixed width text')
 st.markdown('_Markdown_') # see *
