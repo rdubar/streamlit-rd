@@ -1,7 +1,8 @@
 import streamlit as st
-import password
 
-# /Users/roger/.virtualenvs/streamlit-rd/bin/streamlit run /Users/roger/PycharmProjects/streamlit-rd/web.py
+from password import create_password
+
+# streamlit run Password_Generator.py
 
 PAGE_TITLE = "Rog's Password Generator"
 default_length = 20
@@ -27,7 +28,7 @@ def show_page():
 
     st.title(PAGE_TITLE)
 
-    st.code(password.create_password(length=display_value()))
+    st.code(create_password(length=display_value()))
 
     st.slider(
         "Length", min_value=4, max_value=64, value=default_length, step=1, key="length", on_change=display_value
@@ -38,18 +39,3 @@ def show_page():
         st.info(info)
 
 show_page()
-
-from mysql.connector import connect, Error
-
-st.write('Connecting to:',st.secrets.mysql.host)
-
-try:
-    with connect(
-        host=st.secrets.mysql.host,
-        user=st.secrets.mysql.user,
-        password=st.secrets.mysql.password,
-    ) as connection:
-        st.write('Connection',connection)
-except Error as e:
-    print(e)
-st.write('Program complete.')

@@ -1,6 +1,6 @@
-# streamlit_app.py
+# About_Streamlit.py
 
-# /Users/roger/.virtualenvs/streamlit-rd/bin/streamlit run /Users/roger/PycharmProjects/streamlit-rd/streamlit_app.py
+# /Users/roger/.virtualenvs/streamlit-rd/bin/streamlit run /Users/roger/PycharmProjects/streamlit-rd/pages/Test_Page.py
 
 
 import streamlit as st
@@ -13,7 +13,8 @@ def init_connection():
     return mysql.connector.connect(**st.secrets["mysql"])
 
 conn = init_connection()
-
+conn
+'''
 # Perform query.
 # Uses st.cache_data to only rerun when the query changes or after 10 min.
 @st.cache_data(ttl=600)
@@ -27,3 +28,4 @@ rows = run_query("SELECT * from mytable;")
 # Print results.
 for row in rows:
     st.write(f"{row[0]} has a :{row[1]}:")
+'''
