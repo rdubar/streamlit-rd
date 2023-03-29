@@ -41,7 +41,7 @@ show_page()
 
 from mysql.connector import connect, Error
 
-print('Connecting to:',st.secrets.mysql.host)
+st.write('Connecting to:',st.secrets.mysql.host)
 
 try:
     with connect(
@@ -49,7 +49,7 @@ try:
         user=st.secrets.mysql.user,
         password=st.secrets.mysql.password,
     ) as connection:
-        print('Connection',connection)
+        st.write('Connection',connection)
 except Error as e:
     print(e)
-print('Program complete.')
+st.write('Program complete.')
