@@ -3,6 +3,7 @@ import password
 
 # /Users/roger/.virtualenvs/streamlit-rd/bin/streamlit run /Users/roger/PycharmProjects/streamlit-rd/web.py
 
+PAGE_TITLE = "Rog's Password Generator"
 default_length = 20
 
 def display_value():
@@ -20,7 +21,11 @@ but beware of public computers.
 """
 
 def show_page():
-    st.title("Rog's Password Generator")
+
+    st.set_page_config(page_title=PAGE_TITLE, page_icon=None, layout="centered",
+                       initial_sidebar_state="auto", menu_items=None)
+
+    st.title(PAGE_TITLE)
 
     st.code(password.create_password(length=display_value()))
 
