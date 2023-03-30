@@ -7,6 +7,9 @@ from password import create_password
 PAGE_TITLE = "Rog's Password Generator"
 default_length = 20
 
+st.set_page_config(page_title=PAGE_TITLE, page_icon=':fish:', layout="centered",
+                       initial_sidebar_state="auto", menu_items=None)
+
 def display_value():
     """ return length from the slider, or the default value """
     if 'length' in st.session_state:
@@ -22,10 +25,6 @@ but beware of public computers.
 """
 
 def show_page():
-
-    st.set_page_config(page_title=PAGE_TITLE, page_icon=None, layout="centered",
-                       initial_sidebar_state="auto", menu_items=None)
-
     st.title(PAGE_TITLE)
 
     st.code(create_password(length=display_value()))
