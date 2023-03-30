@@ -1,13 +1,8 @@
 import streamlit as st
-import streamlit_analytics
 
 PAGE_TITLE = "Rog's Password Generator"
 st.set_page_config(page_title=PAGE_TITLE, page_icon=':fish:', layout="centered",
                        initial_sidebar_state="auto", menu_items=None)
-
-with streamlit_analytics.track():
-    st.text_input("Write something")
-    st.button("Click me")
 
 from password import create_password
 
