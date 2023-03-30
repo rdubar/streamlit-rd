@@ -24,7 +24,8 @@ df = df.drop(columns=['search'])
 st.dataframe(data=df, width=None, height=None, use_container_width=True)
 if search: st.button('Clear search', on_click=clear_text)
 
-years = df['year'].fillna(0).replace('', 0).astype('int64').value_counts().sort_index()
+years = df.copy()
+years = years['year'].fillna(0).replace('', 0).astype('int64').value_counts().sort_index()
 st.header('Titles by year')
 st.bar_chart(years, x=None, y=None)
 
