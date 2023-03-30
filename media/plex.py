@@ -83,7 +83,7 @@ def get_plex_info(update=False, reset=False):
 def search_records(text, data, display=False):
     matches = []
     for object in data:
-        if text in str(vars(object)).lower():
+        if text in object.search:
             matches.append(object)
     if display:
         output = f'Found {len(matches):,} matches in {len(data):,} entries for "{text}".'
@@ -112,7 +112,7 @@ def get_quality(x):
 def get_dataframe(data, path=DATAFRAME_FILE):
     df = pandas.DataFrame([vars(s) for s in data])
     #df = df.sort_values(by=['added'])
-    df = df[['title', 'year', 'quality', 'source','added']].astype(np.int64, errors='ignore')
+    df = df[['title', 'year', 'quality', 'source','added','search']].astype(np.int64, errors='ignore')
     df['added'] = pandas.to_datetime(df["added"]).dt.date
     df['quality'] = df['quality'].apply(get_quality)
     df.set_index('title', inplace=True)

@@ -52,6 +52,11 @@ class MediaRecord:
         self.size = f.size if hasattr(f, 'size') else empty
         self.file = f.file if hasattr(f, 'file') else empty
         self.uncompressed = True if self.codec=='mpeg2video' else False
+        self.set_search()
+
+    def set_search(self):
+        self.search = str(vars(self)).lower()
+        return self.search
 
     def entry(self):
         entry = self.title.lower()
