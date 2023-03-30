@@ -15,7 +15,7 @@ search = st.text_input("search", value="", max_chars=None, key="search", type="d
               kwargs=None, placeholder="Search for title, actor, etc.", disabled=False, label_visibility="hidden")
 
 if search:
-    df = df[df['search'].str.contains(search, case=False)]
+    if = df[df['search'].str.contains(search, case=False)]
 
 def clear_text():
     st.session_state["search"] = ""
