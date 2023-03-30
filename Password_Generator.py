@@ -1,4 +1,12 @@
 import streamlit as st
+import streamlit_analytics
+
+st.set_page_config(page_title=PAGE_TITLE, page_icon=':fish:', layout="centered",
+                       initial_sidebar_state="auto", menu_items=None)
+
+with streamlit_analytics.track():
+    st.text_input("Write something")
+    st.button("Click me")
 
 from password import create_password
 
@@ -7,8 +15,6 @@ from password import create_password
 PAGE_TITLE = "Rog's Password Generator"
 default_length = 20
 
-st.set_page_config(page_title=PAGE_TITLE, page_icon=':fish:', layout="centered",
-                       initial_sidebar_state="auto", menu_items=None)
 
 def display_value():
     """ return length from the slider, or the default value """
