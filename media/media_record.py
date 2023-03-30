@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 import re, datetime
-from utils import show_file_size
+from tools.utils import show_file_size
 
 def object_clean(object, remove):
     """ Hack to clean object information for easy plain text search """

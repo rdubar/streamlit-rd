@@ -1,7 +1,7 @@
 #!/usr/bin/python
 from media_record import MediaRecord
 import os, random, time
-from utils import showtime
+from tools.utils import showtime
 
 MEDIA_LIST = '/Users/roger/PycharmProjects/streamlit-rd/data/media.txt'
 
