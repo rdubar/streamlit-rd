@@ -1,7 +1,7 @@
 import mysql.connector
 import toml
 
-SECRETS = toml.load('.streamlit/secrets.toml')
+SECRETS = toml.load('../.streamlit/secrets.toml')
 
 try:
     mydb = mysql.connector.connect(**SECRETS['mysql'])
