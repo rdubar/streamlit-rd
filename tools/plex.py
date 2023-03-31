@@ -2,8 +2,8 @@ from plexapi.server import PlexServer
 import time, argparse
 from datetime import datetime
 from tools.utils import read_toml, TOML_FILE, save_data, load_data, showtime
-from media_record import MediaRecord
-from library import get_library_records
+from tools.media_record import MediaRecord
+from tools.library import get_library_records
 import pandas
 import numpy as np
 
@@ -123,7 +123,7 @@ def get_dataframe(data, path=DATAFRAME_FILE):
 
 def main():
     clock = time.perf_counter()
-    print("Rog's Streamit Plex Processor")
+    print("Rog's Streamlit Plex Processor.")
 
     parser = argparse.ArgumentParser()
     p = parser.add_argument
@@ -139,6 +139,11 @@ def main():
     library_records = get_library_records()
 
     records = sorted(media_records + library_records, key=lambda x: x.entry())
+
+    if not records:
+        print('No Records Found. Aborting.')
+        return
+
     df = get_dataframe(records)
 
     if search:

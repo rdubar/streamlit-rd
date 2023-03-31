@@ -5,7 +5,7 @@
 import streamlit as st
 import mysql.connector
 
-from tools.ish import ish
+from tools.password import create_password
 
 # Initialize connection.
 # Uses st.cache_resource to only run once.
@@ -13,22 +13,9 @@ from tools.ish import ish
 def init_connection():
     return mysql.connector.connect(**st.secrets["mysql"])
 
-st.write(ish())
+st.code(create_password())
 
 conn = init_connection()
 conn
-'''
-# Perform query.
-# Uses st.cache_data to only rerun when the query changes or after 10 min.
-@st.cache_data(ttl=600)
-def run_query(query):
-    with conn.cursor() as cur:
-        cur.execute(query)
-        return cur.fetchall()
 
-rows = run_query("SELECT * from mytable;")
 
-# Print results.
-for row in rows:
-    st.write(f"{row[0]} has a :{row[1]}:")
-'''

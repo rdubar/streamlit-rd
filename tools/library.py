@@ -1,5 +1,5 @@
 #!/usr/bin/python
-from media_record import MediaRecord
+from tools.media_record import MediaRecord
 import os, random, time
 from tools.utils import showtime
 

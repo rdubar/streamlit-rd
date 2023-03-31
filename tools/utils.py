@@ -3,6 +3,8 @@
 import os, time, pickle, toml
 import timeago, datetime
 
+
+
 TOML_FILE = '../.streamlit/secrets.toml'
 
 #from tqdm import tqdm
@@ -156,7 +158,7 @@ def load_data(path):
             data = pickle.load(handle)
         except Exception as e:
             log(f'FAILED TO LOAD: {path}: {e}')
-            return None
+            return []
     log(f'Loaded {len(data):,} records from {path}, last updated {modified}.')
     return data
 
