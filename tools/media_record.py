@@ -21,6 +21,7 @@ class MediaRecord:
 
     def __post_init__(self):
         self.set_entry()
+        self.set_search()
 
     def __str__(self):
         return self.entry()
@@ -61,7 +62,10 @@ class MediaRecord:
         self.set_search()
 
     def set_search(self):
-        self.search = str(vars(self)).lower()
+        s = str(vars(self)).lower()
+        while "' " in s or '  ' in s:
+            s = s.replace( "'",'').replace('  ',' ')
+        self.search = s
         return self.search
 
     def display(self):

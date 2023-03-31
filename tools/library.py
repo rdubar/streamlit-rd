@@ -32,7 +32,6 @@ def get_library_records(path=MEDIA_LIST, verbose=True):
             title = ' '.join(parts[:-2])
             year = None
         m = MediaRecord(title=title, year=year, source=source, quality=quality, extras=extras)
-        m.set_search()
         records.append(m)
     if len(records) == 0:
         print(f'No media records found in {path}')
