@@ -20,10 +20,15 @@ class MediaRecord:
     size: int = None
 
     def __post_init__(self):
-        pass
+        self.set_entry()
 
     def __str__(self):
         return self.entry()
+
+    def set_entry(self):
+        self.entry = self.title.lower()
+        if self.year: self.entry += f' ({self.year})'
+        return self.entry
 
     def set_plex_info(self, plex):
         p = plex
@@ -32,6 +37,7 @@ class MediaRecord:
         self.title = p.title
         empty = ''
         self.year = p.year if hasattr(p, 'year') else empty
+        self.set_entry()
         self.source = 'Plex'
         self.art = p.art if hasattr(p,'art') else empty
         self.thumb = p.thumb if hasattr(p,'thumb') else empty
@@ -58,14 +64,9 @@ class MediaRecord:
         self.search = str(vars(self)).lower()
         return self.search
 
-    def entry(self):
-        entry = self.title.lower()
-        #if hasattr(self, 'year') and self.year and self.year != '': entry += f' ({self.year})'
-        return str(entry)
-
     def display(self):
         source = self.source[:5].lower() if hasattr(self,'source') else ''
         s = show_file_size(self.size) if hasattr(self,'source') else ''
         h = self.height if hasattr(self,'height') else ''
         b = self.bitrate if hasattr(self,'bitrate') else ''
-        return f'{source:>5}  {s:>10} {h:>6} {b:>6}  {self.entry()}'
+        return f'{source:>5}{s:>10} {h:>6} {b:>6}   {self.entry}'

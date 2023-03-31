@@ -21,7 +21,8 @@ Arrow bug for blank year fields
 
 ### Todo: 
 ```
-Create master portfolio page
+Message facility
+AWS demo
 Implement bignums & random text?
 Links from media to wikipedia?
 Add ish.js clock

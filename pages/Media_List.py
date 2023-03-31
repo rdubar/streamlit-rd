@@ -12,7 +12,7 @@ df = pd.read_pickle("data/plex_df.pkl")
 
 search = st.text_input("search", value="", max_chars=None, key="search", type="default",
               help="Enter Search Text Here", autocomplete=None, on_change=None, args=None,
-              kwargs=None, placeholder="Search for title, actor, etc.", disabled=False, label_visibility="hidden")
+              kwargs=None, placeholder="Search for title, actor, director, genre, etc.", disabled=False, label_visibility="hidden")
 
 if search:
     df = df[df['search'].str.contains(search, case=False)]

@@ -80,7 +80,7 @@ def get_plex_info(update=False, reset=False):
     print(f'Plex info updated in {showtime(clock)}.')
     return new_media_list
 
-def search_records(text, data, display=False):
+def search_records(text, data, display=False, verbose=False):
     matches = []
     for object in data:
         if text in object.search:
@@ -88,7 +88,9 @@ def search_records(text, data, display=False):
     if display:
         output = f'Found {len(matches):,} matches in {len(data):,} entries for "{text}".'
         print(output)
-        [ print(x.display()) for x in matches ]
+        for x in matches:
+            print(x.display())
+            if verbose: print(x.search)
         if len(matches) > 10:
             print(output)
     return matches
@@ -138,7 +140,7 @@ def main():
     media_records = get_plex_info(update=update, reset=reset)
     library_records = get_library_records()
 
-    records = sorted(media_records + library_records, key=lambda x: x.entry())
+    records = sorted(media_records + library_records, key=lambda x: x.entry)
 
     if not records:
         print('No Records Found. Aborting.')
