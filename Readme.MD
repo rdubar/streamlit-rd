@@ -13,12 +13,6 @@ streamlit run first_app.py
 Handy tips:
 https://docs.streamlit.io/library/cheatsheet
 
-### Known Bugs:
-```
-Year field becomes type int after search
-Arrow bug for blank year fields
-```
-
 ### Todo: 
 ```
 Message facility

@@ -16,6 +16,7 @@ search = st.text_input("search", value="", max_chars=None, key="search", type="d
 
 if search:
     df = df[df['search'].str.contains(search, case=False)]
+    df['year'] = df['year'].astype('str') # fix for bug where year would become int
 
 def clear_text():
     st.session_state["search"] = ""
