@@ -1,6 +1,7 @@
 # streamlit run pages/Home.py
 
 import streamlit as st
+
 from tools.password import create_password
 
 PAGE_TITLE = "Rog's Streamlit Playground"

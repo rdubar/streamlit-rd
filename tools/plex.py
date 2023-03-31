@@ -1,6 +1,6 @@
 from plexapi.server import PlexServer
 import time, argparse
-from datetime import datetime
+
 from tools.utils import read_toml, TOML_FILE, save_data, load_data, showtime
 from tools.media_record import MediaRecord
 from tools.library import get_library_records
