@@ -12,6 +12,12 @@ init(autoreset=True)
 def warn(text):
     print(Fore.RED+text)
 
+def success(text):
+    print(Fore.GREEN+text)
+
+def info(text):
+    print(Fore.BLUE+text)
+
 def log(text):
     print(text)
 
@@ -149,16 +155,17 @@ def read_toml(path=TOML_FILE, section = None, debug=False):
 
 def custom_key(obj, attr_name):
     """ ChatGPT derived function to enable sorting of list of objects of mixed types by an attribute """
-    value = getattr(obj, attr_name, None)
-    if value is None:
-        # None values should come first
-        return -float('inf')
-    elif isinstance(value, datetime):
-        # Datetime objects should be sorted by their timestamp value
-        return value.timestamp()
+    elem = getattr(obj, attr_name, None)
+    if elem is None:
+        return (0, None)
+    elif isinstance(elem, int):
+        return (1, elem)
+    elif isinstance(elem, str):
+        return (2, elem.lower())
+    elif isinstance(elem, datetime):
+        return (3, elem)
     else:
-        # Other values can be sorted as-is
-        return value
+        return (4, str(elem))
 
 def sort_records(records, attrib='added', reverse=True, display=True, number=5, verbose=False):
     """ Sort list of objects by attribute, with display option: can be mixed types """
@@ -174,6 +181,15 @@ def sort_records(records, attrib='added', reverse=True, display=True, number=5, 
     return sorted_list
 
 def search_records(text, data, display=False, verbose=False, attrib=None, match=None):
+    """
+    :param text: text to search for
+    :param data: list of items to search
+    :param display: if True, print items
+    :param verbose: if True, print full info about result
+    :param attrib: if present, filter results by attrib
+    :param match: if present, only show results matcching this text
+    :return:
+    """
     matches = []
 
     if attrib:

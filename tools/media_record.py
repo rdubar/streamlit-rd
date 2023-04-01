@@ -73,10 +73,11 @@ class MediaRecord:
         source = self.source[:5].lower() if hasattr(self,'source') and self.source != None else ''
         s = show_file_size(self.size) if hasattr(self,'source') and self.size != None else ''
         h = self.height if hasattr(self,'height') and self.height!= None else ''
+        if hasattr(self,'codec') and self.codec == 'mpeg2video': h = f'*{h}'
         b = self.bitrate if hasattr(self,'bitrate') and self.bitrate != None else ''
         return f'{source:>5}{s:>10} {h:>6} {b:>6}   {self.entry}'
 
-    def get(self, attrib, default=''):
+    def get(self, attrib, default=None):
         if attrib == 'added': default = datetime.min
         if attrib == 'year': default = 0
         v = getattr(self,attrib) if hasattr(self,attrib) and getattr(self,attrib)!=None else default

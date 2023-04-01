@@ -8,7 +8,7 @@ pip install watchdog
 pip install streamlit --upgrade
 streamlit hello
 
-streamlit run first_app.py
+streamlit run Hello.py
 ```
 Handy tips:
 https://docs.streamlit.io/library/cheatsheet

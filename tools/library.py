@@ -2,10 +2,11 @@
 from tools.media_record import MediaRecord
 import os, random, time
 from tools.utils import showtime
+from settings import LIBRARY_LIST
 
-MEDIA_LIST = '/Users/roger/PycharmProjects/streamlit-rd/data/media.txt'
 
-def get_library_records(path=MEDIA_LIST, verbose=True):
+
+def get_library_records(path=LIBRARY_LIST, verbose=True):
     clock = time.perf_counter()
     if not os.path.exists(path):
         print(f'Movie List Path not found: {path}')
