@@ -21,8 +21,8 @@ if search:
 def clear_text():
     st.session_state["search"] = ""
 
-df = df.drop(columns=['search'])
-st.dataframe(data=df, width=None, height=None, use_container_width=True)
+df2 = df.drop(columns=['search'])
+st.dataframe(data=df2, width=None, height=None, use_container_width=True)
 if search: st.button('Clear search', on_click=clear_text)
 
 years = df.copy()

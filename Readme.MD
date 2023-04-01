@@ -21,5 +21,8 @@ Implement bignums & random text?
 Links from media to wikipedia?
 Add ish.js clock
 Favicon not working
+Type of default values, for searches
+Use MediaRecord for all files
 ```
+
 

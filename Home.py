@@ -1,4 +1,4 @@
-# streamlit run pages/Home.py
+# streamlit run Home.py
 
 import streamlit as st
 

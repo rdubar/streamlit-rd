@@ -1,5 +1,6 @@
 from dataclasses import dataclass
-import re, datetime
+import re
+from datetime import datetime
 from tools.utils import show_file_size
 
 def object_clean(object, remove):
@@ -24,7 +25,7 @@ class MediaRecord:
         self.set_search()
 
     def __str__(self):
-        return self.entry()
+        return self.display()
 
     def set_entry(self):
         self.entry = self.title.lower()
@@ -69,8 +70,14 @@ class MediaRecord:
         return self.search
 
     def display(self):
-        source = self.source[:5].lower() if hasattr(self,'source') else ''
-        s = show_file_size(self.size) if hasattr(self,'source') else ''
-        h = self.height if hasattr(self,'height') else ''
-        b = self.bitrate if hasattr(self,'bitrate') else ''
+        source = self.source[:5].lower() if hasattr(self,'source') and self.source != None else ''
+        s = show_file_size(self.size) if hasattr(self,'source') and self.size != None else ''
+        h = self.height if hasattr(self,'height') and self.height!= None else ''
+        b = self.bitrate if hasattr(self,'bitrate') and self.bitrate != None else ''
         return f'{source:>5}{s:>10} {h:>6} {b:>6}   {self.entry}'
+
+    def get(self, attrib, default=''):
+        if attrib == 'added': default = datetime.min
+        if attrib == 'year': default = 0
+        v = getattr(self,attrib) if hasattr(self,attrib) and getattr(self,attrib)!=None else default
+        return v

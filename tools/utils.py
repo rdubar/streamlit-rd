@@ -1,23 +1,23 @@
 #!/usr/bin/python
 
 import os, time, pickle, toml
-import timeago, datetime
+import timeago
+from datetime import datetime
 
+from settings import TOML_FILE
 
+from colorama import init, Fore
+init(autoreset=True)
 
-TOML_FILE = '../.streamlit/secrets.toml'
-
-#from tqdm import tqdm
-#import pymediainfo
-#from colorama import init, Fore
-#init(autoreset=True)
-
-def time_ago(date):
-    now = datetime.datetime.now()
-    return timeago.format(date, now)
+def warn(text):
+    print(Fore.RED+text)
 
 def log(text):
     print(text)
+
+def time_ago(date):
+    now = datetime.now()
+    return timeago.format(date, now)
 
 def clear_line(n=1):
     LINE_UP = '\033[1A'
@@ -68,35 +68,6 @@ def get_all_files(root_dir : str, verbose=False, ignore = [], purge = [], quiet=
     if verbose: print(f'Skipped list: {skipped_list}')
     return path_list
 
-
-def purge_files(path_list, purge_list, ignore_case = False):
-    ''' Purge items in path_list matching text in the purge_list, returning a new list of remaining items '''
-    errors_count = 0
-    purged_count = 0
-    new_list = []
-    for path in path_list:
-        path_check = path.lower() if ignore_case else path
-        if ignore_case: path = path.lower()
-        for text in purge_list:
-            deleted = False
-            if ignore_case: text = text.lower()
-            if text in path_check:
-                if os.path.exists(path):
-                    try:
-                        os.remove(path)
-                        purged_count += 1
-                        deleted = True
-                    except Exception as e:
-                        log(f'Failed to purge {path}: {e}')
-                        errors += 1
-                else:
-                    log(f'Unable to purge {path}: file not found.')
-                    errors += 1
-            if not deleted: new_list.append(path)
-    log(f'Purged {deleted} files with {errors} errors.')
-    return new_list
-
-
 def show_file_size(bytes, r=1):
     if not bytes: return ''
     terabytes = bytes / (10 ** 12)
@@ -131,10 +102,10 @@ def showtime(s: float) -> str:
 def save_data(path, data):
     """ save data to path """
     if not path:
-        log('Save data - no path given')
+        warn('Save data - no path given')
         return False
     if not data or len(data)==0:
-        log(f'No data to save to {path}')
+        warn(f'No data to save to {path}')
         return False
     backup = path + '.bak'
     temp = path + '.tmp'
@@ -150,32 +121,82 @@ def save_data(path, data):
 
 def load_data(path):
     if not os.path.exists(path):
-        log(f'No data file at {path}')
+        warn(f'No data file at {path}')
         return []
     modified = time_ago(get_modified_time(path, str=False))
     with open(path, 'rb') as handle:
         try:
             data = pickle.load(handle)
         except Exception as e:
-            log(f'FAILED TO LOAD: {path}: {e}')
+            warn(f'FAILED TO LOAD: {path}: {e}')
             return []
     log(f'Loaded {len(data):,} records from {path}, last updated {modified}.')
     return data
 
-def read_toml(name, section = None, debug=False):
+def read_toml(path=TOML_FILE, section = None, debug=False):
     """ Read an TOML file, return a dictionary """
-    path = __file__[:__file__.rfind('/')+1]+name
     if not os.path.exists(path):
-        print(f'read_toml: file not found: {path}')
+        warn(f'read_toml: file not found: {path}')
         return {}
     data = toml.load(path)
     if section:
         if section in data:
             data = data[section]
         else:
-            print('Read TOML: {section} not found in {path}.')
+            warn('Read TOML: {section} not found in {path}.')
     if debug: print(data)
     return data
+
+def custom_key(obj, attr_name):
+    """ ChatGPT derived function to enable sorting of list of objects of mixed types by an attribute """
+    value = getattr(obj, attr_name, None)
+    if value is None:
+        # None values should come first
+        return -float('inf')
+    elif isinstance(value, datetime):
+        # Datetime objects should be sorted by their timestamp value
+        return value.timestamp()
+    else:
+        # Other values can be sorted as-is
+        return value
+
+def sort_records(records, attrib='added', reverse=True, display=True, number=5, verbose=False):
+    """ Sort list of objects by attribute, with display option: can be mixed types """
+    r = f' (reversed)' if reverse else ''
+    count = len(records)
+    if number > count : number = count
+    if display or verbose: print(f'Showing {number:,} of {count:,} records sorted by "{attrib}"{r}.')
+    sorted_list = sorted(records, key=lambda x: custom_key(x, attrib), reverse=reverse)
+    if number > count or verbose: number = count
+    if display or verbose:
+        for i in range(number):
+            print(sorted_list[i])
+    return sorted_list
+
+def search_records(text, data, display=False, verbose=False, attrib=None, match=None):
+    matches = []
+
+    if attrib:
+        filtered = [x for x in data if hasattr((x,attrib))]
+        if match: filtered = [x for x in filtered if getattr((x,attrib))==match]
+        if display:
+            m = f'="{match}"' if match else ''
+            print(f'Filtered {len(filtered)} of len(data) objects for "attrib"{m}')
+        data = filtered
+
+    for object in data:
+        if text in object.search:
+            matches.append(object)
+    if display:
+        output = f'Found {len(matches):,} matches in {len(data):,} entries for "{text}".'
+        print(output)
+        for x in matches:
+            print(x.display())
+            if verbose: print(x.search)
+        if len(matches) > 10:
+            print(output)
+    return matches
+
 
 def main():
     print("Rog's Tools.")

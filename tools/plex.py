@@ -1,24 +1,27 @@
-from plexapi.server import PlexServer
-import time, argparse
+import time
 
-from tools.utils import read_toml, TOML_FILE, save_data, load_data, showtime
-from tools.media_record import MediaRecord
-from tools.library import get_library_records
+from plexapi.server import PlexServer
 import pandas
 import numpy as np
-
 from tqdm import tqdm
 
-MEDIA_RECORDS = "/Users/roger/PycharmProjects/streamlit-rd/data/media_records.data"
+from settings import MEDIA_RECORDS, DATAFRAME_FILE, TOML_FILE
+from tools.utils import read_toml, save_data, load_data, showtime, search_records, warn
+from tools.media_record import MediaRecord
+
 PLEX_INFO = read_toml(TOML_FILE, section = 'plex')
-DATAFRAME_FILE = '/Users/roger/PycharmProjects/streamlit-rd/data/plex_df.pkl'
+
 
 def connect_to_plex(    server_ip = None,
                         port = 32400,
                         token = None,
                         secrets = PLEX_INFO,
                         url = False):
-    if not server_ip: server_ip = secrets['server_ip']
+    if not server_ip:
+        if 'server_ip' not in secrets:
+            warn('Plex Connect: server ip not found.')
+            return None
+        server_ip = secrets['server_ip']
     if not port: port = secrets['port']
     if not token: token = secrets['token']
     if url: print(f'Plex URL: http://{server_ip}:{port}{12}?X-Plex-Token={token}')
@@ -80,21 +83,6 @@ def get_plex_info(update=False, reset=False):
     print(f'Plex info updated in {showtime(clock)}.')
     return new_media_list
 
-def search_records(text, data, display=False, verbose=False):
-    matches = []
-    for object in data:
-        if text in object.search:
-            matches.append(object)
-    if display:
-        output = f'Found {len(matches):,} matches in {len(data):,} entries for "{text}".'
-        print(output)
-        for x in matches:
-            print(x.display())
-            if verbose: print(x.search)
-        if len(matches) > 10:
-            print(output)
-    return matches
-
 
 def get_quality(x):
     if type(x) == int:
@@ -124,39 +112,7 @@ def get_dataframe(data, path=DATAFRAME_FILE):
     return df
 
 def main():
-    clock = time.perf_counter()
-    print("Rog's Streamlit Plex Processor.")
-
-    parser = argparse.ArgumentParser()
-    p = parser.add_argument
-    p("search", help="search the library", type=str, nargs='*')
-    p("-u", "--update", help="update the library", action="store_true")
-    p("--reset", help="reset the library", action="store_true")
-    args = parser.parse_args()
-    update = args.update
-    reset = args.reset
-    search = args.search
-
-    media_records = get_plex_info(update=update, reset=reset)
-    library_records = get_library_records()
-
-    records = sorted(media_records + library_records, key=lambda x: x.entry)
-
-    if not records:
-        print('No Records Found. Aborting.')
-        return
-
-    df = get_dataframe(records)
-
-    if search:
-        search_records(' '.join(search).lower(), records, display=True)
-    else:
-        sorted_list = sorted(records, key=lambda x: x.added if x.added is not None else datetime.min, reverse=True)
-        for i in range(5):
-            print(sorted_list[i].display())
-
-    print(f'completed in {showtime(clock)}.')
-
+    pass
 
 if __name__ == '__main__':
     main()
