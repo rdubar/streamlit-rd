@@ -1,11 +1,10 @@
-import os.path
 import time
 
 from plexapi.server import PlexServer
 from tqdm import tqdm
 
 from settings import MEDIA_RECORDS, DATAFRAME_FILE, TOML_FILE
-from tools.utils import read_toml, save_data, load_data, showtime, show_file_size, warn
+from tools.utils import read_toml, save_data, load_data, showtime, warn
 from tools.media_record import MediaRecord
 
 PLEX_INFO = read_toml(TOML_FILE, section = 'plex')
@@ -83,7 +82,19 @@ def get_plex_info(update=False, reset=False):
     return new_media_list
 
 def main():
-    pass
+    plex = connect_to_plex()
+
+    print('HELLO!',plex)
+    title = 'Jaws'  # Replace with the title you want to search for
+
+    search_results = plex.search(title)
+
+    for result in search_results:
+        if result.type == 'movie':
+            print(result.title)
+            print(result.summary)
+            print(result.year)
+            # Add any other attributes you want to print or use
 
 if __name__ == '__main__':
     main()

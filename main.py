@@ -1,6 +1,6 @@
 import argparse, time
 
-from tools.utils import showtime, sort_records, search_records, warn, success, info, show_file_size
+from tools.utils import showtime, sort_by_attrib_value, search_records, warn, success, info, show_file_size
 from tools.plex import get_plex_info
 from tools.library import get_library_records
 from tools.password import create_password
@@ -30,6 +30,7 @@ def main():
     reset = args.reset
     search = args.search
     verbose = args.verbose
+    size = args.size
     number = args.number or 5
     reverse = False if args.reverse else True
     sort_by = 'added'
@@ -43,10 +44,10 @@ def main():
     records = sorted(media_records + library_records, key=lambda x: x.entry)
 
     if args.height:
-        filtered = [x for x in records if hasattr(x,'height') and x.height != None and x.height != '']
-        print(f'Filtered {len(filtered):,} of {len(records):,} items with "height"')
-        records = filtered
         sort_by = 'height'
+
+    if args.size:
+        sort_by = 'size'
 
     if args.all:
         number = len(records)
@@ -66,10 +67,10 @@ def main():
     if search:
         search_records(' '.join(search).lower(), records, display=True, verbose=verbose)
     else:
-        sort_records(records, attrib=sort_by, number=number, reverse=reverse)
+        sort_by_attrib_value(records, attrib=sort_by, number=number, reverse=reverse)
 
-    if args.size:
-        filter = [x for x in records if x.size != None and type(x.size)==int]
+    if size:
+        filter = [x for x in records if type(x.size)==int]
         total = sum([x.size for x in filter])
         print(f'Known size for {len(filter):,} of {len(records):,} records: {show_file_size(total)}.')
 

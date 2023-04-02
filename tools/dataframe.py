@@ -1,5 +1,5 @@
 import os
-import pandas
+import pandas as pd
 import numpy as np
 
 from settings import DATAFRAME_FILE
@@ -21,10 +21,14 @@ def get_quality(x):
     return x.upper()
 
 def get_dataframe(data, path=DATAFRAME_FILE):
-    df = pandas.DataFrame([vars(s) for s in data])
+    """
+    Convert list of media objects into pandas dataframe
+    :type path: object
+    """
+    df = pd.DataFrame([vars(s) for s in data])
     #df = df.sort_values(by=['added'])
     df = df[['title', 'year', 'quality', 'source','added','search']].astype(np.int64, errors='ignore')
-    df['added'] = pandas.to_datetime(df["added"]).dt.date
+    df['added'] = pd.to_datetime(df["added"]).dt.date
     df['quality'] = df['quality'].apply(get_quality)
     df.set_index('title', inplace=True)
     df = df.fillna('')
@@ -35,6 +39,6 @@ def get_dataframe(data, path=DATAFRAME_FILE):
         return None
     s = os.path.getsize(path)
     print(f'Saved dataframe to: {path} ({show_file_size(s)}).')
-    df['added'] = pandas.to_datetime(df['added'])
+    df['added'] = pd.to_datetime(df['added'])
     df_sorted = df.sort_values(by=['added'], na_position='last', ascending=False)
     return df_sorted

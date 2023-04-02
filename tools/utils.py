@@ -7,29 +7,37 @@ from datetime import datetime
 from settings import TOML_FILE
 
 from colorama import init, Fore
+
 init(autoreset=True)
 
+
 def warn(text):
-    print(Fore.RED+text)
+    print(Fore.RED + text)
+
 
 def success(text):
-    print(Fore.GREEN+text)
+    print(Fore.GREEN + text)
+
 
 def info(text):
-    print(Fore.BLUE+text)
+    print(Fore.BLUE + text)
+
 
 def log(text):
     print(text)
 
+
 def time_ago(date):
     now = datetime.now()
     return timeago.format(date, now)
+
 
 def clear_line(n=1):
     LINE_UP = '\033[1A'
     LINE_CLEAR = '\x1b[2K'
     for i in range(n):
         print(LINE_UP, end=LINE_CLEAR)
+
 
 def get_modified_time(path, str=False):
     ''' return modified file time of path, or zero if file does not exist '''
@@ -38,7 +46,8 @@ def get_modified_time(path, str=False):
     t = os.path.getmtime(path)
     return time.ctime(t) if str else t
 
-def get_all_files(root_dir : str, verbose=False, ignore = [], purge = [], quiet=False) -> dict:
+
+def get_all_files(root_dir: str, verbose=False, ignore=[], purge=[], quiet=False) -> dict:
     ''' Returns a list of paths for all files recursively at root_dir '''
     clock = time.perf_counter()
     print(f'Getting all files from: "{root_dir}" ...Please wait...')
@@ -74,6 +83,7 @@ def get_all_files(root_dir : str, verbose=False, ignore = [], purge = [], quiet=
     if verbose: print(f'Skipped list: {skipped_list}')
     return path_list
 
+
 def show_file_size(bytes, r=1):
     if not bytes: return ''
     terabytes = bytes / (10 ** 12)
@@ -87,6 +97,7 @@ def show_file_size(bytes, r=1):
     # else
     return f'{bytes} bytes'
 
+
 def get_size_of_files(path_list):
     try:
         size = sum(os.path.getsize(path) for path in path_list)
@@ -96,21 +107,23 @@ def get_size_of_files(path_list):
     print(show_file_size(size))
     return size
 
+
 def showtime(s: float) -> str:
     """ return seconds (s) as H:M:S or seconds < 10 """
     if s < 0.1:
         return f'{s:.5f} seconds'
-    elif  s < 100 :
+    elif s < 100:
         return f'{s:.2f} seconds'
     else:
         return datetime.timedelta(seconds=round(s))
+
 
 def save_data(path, data):
     """ save data to path """
     if not path:
         warn('Save data - no path given')
         return False
-    if not data or len(data)==0:
+    if not data or len(data) == 0:
         warn(f'No data to save to {path}')
         return False
     backup = path + '.bak'
@@ -121,9 +134,10 @@ def save_data(path, data):
     if os.path.exists(backup): os.remove(backup)
     if os.path.exists(path): os.rename(path, backup)
     os.rename(temp, path)
-    modified = get_modified_time(path,str=True)
+    modified = get_modified_time(path, str=True)
     log(f'Saved {len(data):,} records to {path}, {modified}.')
     return True
+
 
 def load_data(path):
     if not os.path.exists(path):
@@ -139,7 +153,8 @@ def load_data(path):
     log(f'Loaded {len(data):,} records from {path}, last updated {modified}.')
     return data
 
-def read_toml(path=TOML_FILE, section = None, debug=False):
+
+def read_toml(path=TOML_FILE, section=None, debug=False):
     """ Read an TOML file, return a dictionary """
     if not os.path.exists(path):
         warn(f'read_toml: file not found: {path}')
@@ -152,6 +167,7 @@ def read_toml(path=TOML_FILE, section = None, debug=False):
             warn('Read TOML: {section} not found in {path}.')
     if debug: print(data)
     return data
+
 
 def custom_key(obj, attr_name):
     """ ChatGPT derived function to enable sorting of list of objects of mixed types by an attribute """
@@ -167,11 +183,12 @@ def custom_key(obj, attr_name):
     else:
         return (4, str(elem))
 
+
 def sort_records(records, attrib='added', reverse=True, display=True, number=5, verbose=False):
     """ Sort list of objects by attribute, with display option: can be mixed types """
     r = f' (reversed)' if reverse else ''
     count = len(records)
-    if number > count : number = count
+    if number > count: number = count
     if display or verbose: print(f'Showing {number:,} of {count:,} records sorted by "{attrib}"{r}.')
     sorted_list = sorted(records, key=lambda x: custom_key(x, attrib), reverse=reverse)
     if number > count or verbose: number = count
@@ -179,6 +196,7 @@ def sort_records(records, attrib='added', reverse=True, display=True, number=5, 
         for i in range(number):
             print(sorted_list[i])
     return sorted_list
+
 
 def search_records(text, data, display=False, verbose=False, attrib=None, match=None):
     """
@@ -193,8 +211,8 @@ def search_records(text, data, display=False, verbose=False, attrib=None, match=
     matches = []
 
     if attrib:
-        filtered = [x for x in data if hasattr((x,attrib))]
-        if match: filtered = [x for x in filtered if getattr((x,attrib))==match]
+        filtered = [x for x in data if hasattr((x, attrib))]
+        if match: filtered = [x for x in filtered if getattr((x, attrib)) == match]
         if display:
             m = f'="{match}"' if match else ''
             print(f'Filtered {len(filtered)} of len(data) objects for "attrib"{m}')
@@ -214,12 +232,44 @@ def search_records(text, data, display=False, verbose=False, attrib=None, match=
     return matches
 
 
+def sort_by_attrib_value(objects, attrib='added', reverse=False, number=0, display=True, verbose=True):
+    """"
+    Sort list of objects by attrib, with objects that have that attrib first,
+    either in normal or reverse order, then objects where attrib is None, then objects without attrib.
+    """
+    list1 = []  # objects where attrib is not None
+    list2 = []  # objects where attrib is None
+    list3 = []  # objects without attrib
+    for x in objects:
+        if hasattr(x, attrib):
+            if getattr(x, attrib) not in [None, '', 0]:
+                list1.append(x)
+            else:
+                list2.append(x)
+        else:
+            list3.append(x)
+    sorted_list = sorted(list1, key=lambda x: getattr(x, attrib), reverse=reverse) + list2 + list3
+    if display or verbose:
+        l1 = len(list1)
+        l2 = len(list2)
+        l3 = len(list3)
+        total = len(sorted_list)
+        if verbose: print(f'sort_by_attrib_value: "{attrib}" has_attr({l1}), none_or_null({l2}), no_attr({l3}).')
+        r = f' (reversed)' if reverse else ''
+        if number > total: number = total
+        print(f'Showing {l1:,} of {total:,} items sorted by "{attrib}"{r}.')
+        for i in range(number):
+            print(sorted_list[i])
+    return sorted_list
+
+
 def main():
     print("Rog's Tools.")
 
-    #path_list = get_all_files('..')
-    #get_size_of_files(path_list)
-    #read_env()
+    # path_list = get_all_files('..')
+    # get_size_of_files(path_list)
+    # read_env()
 
-if __name__== "__main__" :
+
+if __name__ == "__main__":
     main()

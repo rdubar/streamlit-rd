@@ -15,6 +15,7 @@ https://docs.streamlit.io/library/cheatsheet
 
 ### Todo: 
 ```
+DF to default to sort by added
 Message facility
 AWS demo
 Implement bignums & random text?
