@@ -2,7 +2,7 @@ import os.path, sys
 from dataclasses import dataclass
 
 import paramiko
-from tools.utils import read_toml, warn, success, info, show_file_size, showtime, save_data, load_data
+from tools.utils import read_toml, warn, success, info, show_file_size, sort_by_attrib_value, save_data, load_data
 from settings import TOML_FILE, FILE_OBJECTS
 import datetime, time
 
@@ -11,6 +11,7 @@ class FileObject:
     """ An object for media titles """
     path: str
     size: int = 0
+    info: str = None
     updated: datetime = None
 
     def __post_init__(self):
@@ -63,8 +64,10 @@ def process_remote_results(results):
     object_list = []
     for info in results:
         if not '\t' in info or not '.' in info: continue
+        ending = info[info.rfind('.')+1:]
+        if len(ending)>5: continue
         size, path = info.split('\t',1)
-        object = FileObject(path=path, size=int(size))
+        object = FileObject(path=path, size=int(size)*1024, info=info)
         object_list.append(object)
     return object_list
 
@@ -94,7 +97,7 @@ def check_incoming():
     results = remote_connect(command='/home/pi/usr/media/incoming.py')
     print(results)
 
-def process_files(update=False, search=None):
+def process_files(update=False, search=None, number=5, reverse=False):
     """ get file objects, search if necessary """
 
     check_incoming()
@@ -110,6 +113,8 @@ def process_files(update=False, search=None):
         [ print(x) for x in matches ]
         s = show_file_size(sum([x.size for x in matches]))
         info(f'Found {len(matches):} matches in {len(file_objects):,} paths for "{search}", totalling ({s}).')
+    else:
+        sort_by_size = sort_by_attrib_value(file_objects, 'size', display=True, number=5, reverse=True)
 
     return
 

@@ -198,7 +198,7 @@ def sort_records(records, attrib='added', reverse=True, display=True, number=5, 
     return sorted_list
 
 
-def search_records(text, data, display=False, verbose=False, attrib=None, match=None):
+def search_records(text, data, display=True, verbose=False, attrib=None, match=None):
     """
     :param text: text to search for
     :param data: list of items to search
@@ -208,19 +208,20 @@ def search_records(text, data, display=False, verbose=False, attrib=None, match=
     :param match: if present, only show results matcching this text
     :return:
     """
-    matches = []
 
     if attrib:
-        filtered = [x for x in data if hasattr((x, attrib))]
+        filtered = [x for x in data if hasattr(x, attrib)]
         if match: filtered = [x for x in filtered if getattr((x, attrib)) == match]
         if display:
             m = f'="{match}"' if match else ''
             print(f'Filtered {len(filtered)} of len(data) objects for "attrib"{m}')
         data = filtered
 
+    matches = []
     for object in data:
         if text in object.search:
             matches.append(object)
+
     if display:
         output = f'Found {len(matches):,} matches in {len(data):,} entries for "{text}".'
         print(output)
@@ -258,7 +259,7 @@ def sort_by_attrib_value(objects, attrib='added', reverse=False, number=0, displ
     if display or verbose:
         r = f' (reversed)' if reverse else ''
         if number > total: number = total
-        print(f'Showing {l1:,} of {total:,} items sorted by "{attrib}"{r}.')
+        print(f'Showing {number:,} of {total:,} items sorted by "{attrib}"{r}.')
         for i in range(number):
             print(sorted_list[i])
     return sorted_list

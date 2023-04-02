@@ -44,7 +44,7 @@ def main():
         process_files(update=update, search=search)
         return
     elif update:
-        process_files(update=update)
+        process_files(update=update, number=number, reverse=reverse)
 
     media_records = get_plex_info(update=update, reset=reset)
     library_records = get_library_records()
