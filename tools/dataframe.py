@@ -28,7 +28,6 @@ def get_dataframe(data, path=DATAFRAME_FILE):
     # Sort data to ensure newest added titles appear first
     data = sort_by_attrib_value(data, 'added', reverse=True)
     df = pd.DataFrame([vars(s) for s in data])
-    print(df)
     df = df[['title', 'year', 'quality', 'source','added','search']].astype(np.int64, errors='ignore')
     df['added'] = pd.to_datetime(df["added"]).dt.date
     df['quality'] = df['quality'].apply(get_quality)
