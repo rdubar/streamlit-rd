@@ -232,7 +232,7 @@ def search_records(text, data, display=False, verbose=False, attrib=None, match=
     return matches
 
 
-def sort_by_attrib_value(objects, attrib='added', reverse=False, number=0, display=True, verbose=True):
+def sort_by_attrib_value(objects, attrib='added', reverse=False, number=0, display=True, verbose=False):
     """"
     Sort list of objects by attrib, with objects that have that attrib first,
     either in normal or reverse order, then objects where attrib is None, then objects without attrib.
@@ -249,12 +249,13 @@ def sort_by_attrib_value(objects, attrib='added', reverse=False, number=0, displ
         else:
             list3.append(x)
     sorted_list = sorted(list1, key=lambda x: getattr(x, attrib), reverse=reverse) + list2 + list3
-    if display or verbose:
-        l1 = len(list1)
+    l1 = len(list1)
+    total = len(sorted_list)
+    if verbose:
         l2 = len(list2)
         l3 = len(list3)
-        total = len(sorted_list)
-        if verbose: print(f'sort_by_attrib_value: "{attrib}" has_attr({l1}), none_or_null({l2}), no_attr({l3}).')
+        print(f'sort_by_attrib_value: "{attrib}" has_attr({l1}), none_or_null({l2}), no_attr({l3}).')
+    if display or verbose:
         r = f' (reversed)' if reverse else ''
         if number > total: number = total
         print(f'Showing {l1:,} of {total:,} items sorted by "{attrib}"{r}.')

@@ -57,8 +57,6 @@ def main():
         warn('No Records Found. Aborting.')
         return
 
-    df = get_dataframe(records)
-
     if args.dvd:
         dvds = [ x for x in records if 'mpeg2video' in x.search ]
         print(f"Found {len(dvds):,} uncompressed dvd titles in {len(records):,} records.")
@@ -67,12 +65,14 @@ def main():
     if search:
         search_records(' '.join(search).lower(), records, display=True, verbose=verbose)
     else:
-        sort_by_attrib_value(records, attrib=sort_by, number=number, reverse=reverse)
+        records = sort_by_attrib_value(records, attrib=sort_by, number=number, reverse=reverse)
 
     if size:
         filter = [x for x in records if type(x.size)==int]
         total = sum([x.size for x in filter])
         print(f'Known size for {len(filter):,} of {len(records):,} records: {show_file_size(total)}.')
+
+    df = get_dataframe(records)
 
     success(f'Completed in {showtime(clock)}.')
 
