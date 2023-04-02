@@ -1,10 +1,10 @@
-import os.path, sys
+import os.path
 from dataclasses import dataclass
 
-import paramiko
-from tools.utils import read_toml, warn, success, info, show_file_size, sort_by_attrib_value, save_data, load_data
-from settings import TOML_FILE, FILE_OBJECTS
-import datetime, time
+from tools.utils import warn, info, show_file_size, sort_by_attrib_value, save_data, load_data
+from settings import FILE_OBJECTS
+from tools.remote import remote_command
+import datetime
 
 @dataclass(order=True)
 class FileObject:
@@ -28,37 +28,6 @@ class FileObject:
         return f'{s:>10}  {self.path}'
 
 
-def files_info():
-    return read_toml(TOML_FILE, section = 'remote')
-
-def remote_connect(credentials=files_info(), command=None):
-    try:
-        hostname, port, username, password, remote_directory = credentials.values()
-    except Exception as e:
-        warn(f'remote_connect failure: {credentials}\n{e}')
-        return
-    print(f'Connecting to {hostname}. Please wait.')
-
-    # create SSH client
-    ssh = paramiko.SSHClient()
-    ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-
-    # connect to server
-    ssh.connect(hostname, port, username, password)
-
-    # execute command to list files in directory
-    if command == None:
-        command = 'du -a {}'.format(remote_directory)
-    stdin, stdout, stderr = ssh.exec_command(command)
-
-    # print output of command
-    results = stdout.read().decode()
-
-    # close SSH connection
-    ssh.close()
-
-    return results
-
 def process_remote_results(results):
     if type(results)==str: results = results.split('\n')
     object_list = []
@@ -72,7 +41,6 @@ def process_remote_results(results):
     return object_list
 
 
-
 def get_file_objects(path=FILE_OBJECTS, update=True):
     info('Getting file records...')
     if not update:
@@ -84,7 +52,7 @@ def get_file_objects(path=FILE_OBJECTS, update=True):
         warn(location_info['remote_directory']+' found locally! Please process directly')
         results = []
     # else
-    results = remote_connect(location_info)
+    results = remote_command(command="du -a /mnt/expansion/media")
     ip = location_info['hostname']
     dir = location_info['remote_directory']
     info(f'Got {len(results):,} results from {ip}:{dir}.')
@@ -94,8 +62,9 @@ def get_file_objects(path=FILE_OBJECTS, update=True):
 
 
 def check_incoming():
-    results = remote_connect(command='/home/pi/usr/media/incoming.py')
+    results = remote_command(command='/home/pi/usr/media/incoming.py')
     print(results)
+
 
 def process_files(update=False, search=None, number=5, reverse=False):
     """ get file objects, search if necessary """
