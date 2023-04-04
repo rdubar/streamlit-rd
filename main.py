@@ -5,7 +5,8 @@ from tools.plex import get_plex_info
 from tools.library import get_library_records
 from tools.password import create_password
 from tools.dataframe import get_dataframe
-from tools.files import process_files
+from tools.files import process_files, FileObject
+from tools.download_video import get_movies
 
 def main():
     #plex.main()
@@ -27,6 +28,8 @@ def main():
     p("-u", "--update", help="update the library", action="store_true")
     p("-v", "--verbose", help="verbose mode", action="store_true")
     p("--reset", help="reset the library", action="store_true")
+    p("--video", help="dowload video", action="store_true")
+
     args = parser.parse_args()
     update = args.update
     reset = args.reset
@@ -39,6 +42,10 @@ def main():
 
     if args.password:
         print(create_password(length=20))
+
+    if args.video:
+        get_movies(search)
+        return
 
     if args.files:
         process_files(update=update, search=search)

@@ -1,18 +1,26 @@
+import time
+
 import paramiko
 
-from tools.utils import read_toml, warn, success, info
+from tools.utils import read_toml, warn, success, info, showtime
 from settings import TOML_FILE
 
-def files_info():
+def remote_info():
     return read_toml(TOML_FILE, section = 'remote')
 
-def remote_command(credentials=files_info(), command=None):
+def remote_command(command=None, credentials=remote_info(), display=True, secret=False):
     """ Execute command remotely at site in credentials """
     try:
-        hostname, port, username, password, _ = credentials.values()
+        hostname, port, username, password, private = credentials.values()
     except Exception as e:
         warn(f'remote_connect failure: {credentials}\n{e}')
         return
+
+    if command and secret:
+        command = command + ' ' + private
+    elif secret:
+        command = private
+
     print(f'Executing "{command}" at {hostname}...')
 
     # create SSH client
@@ -31,13 +39,13 @@ def remote_command(credentials=files_info(), command=None):
     # close SSH connection
     ssh.close()
 
-    print (results)
+    if display: print(results)
 
     return results
 
 
 def main():
-    remote_command(command='ls /mnt/expansion/media/Incoming')
+    print(remote_command('ls'))
 
 if __name__== "__main__" :
     main()
