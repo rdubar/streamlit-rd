@@ -1,6 +1,6 @@
 import argparse, time
 
-from tools.utils import showtime, sort_by_attrib_value, search_records, warn, success, info, show_file_size
+from tools.utils import showtime, display_objects, warn, success, info, show_file_size
 from tools.plex import get_plex_info
 from tools.library import get_library_records
 from tools.password import create_password
@@ -38,7 +38,7 @@ def main():
     size = args.size
     number = args.number or 5
     reverse = False if args.reverse else True
-    sort_by = 'added'
+    sort_by = []
 
     if args.password:
         print(create_password(length=20))
@@ -57,16 +57,7 @@ def main():
     library_records = get_library_records()
 
     records = sorted(media_records + library_records, key=lambda x: x.entry)
-
-    if args.height:
-        sort_by = 'height'
-
-    if args.size:
-        sort_by = 'size'
-
-    if args.all:
-        number = len(records)
-        print('Showing all {number:,} records.')
+    df = get_dataframe(records)
 
     if not records:
         warn('No Records Found. Aborting.')
@@ -77,17 +68,24 @@ def main():
         print(f"Found {len(dvds):,} uncompressed dvd titles in {len(records):,} records.")
         records = dvds
 
-    if search:
-        search_records(' '.join(search).lower(), records, display=True, verbose=verbose)
-    else:
-        records = sort_by_attrib_value(records, attrib=sort_by, number=number, reverse=reverse)
+    if args.height:
+        sort_by.append('height')
+
+    if args.size:
+        sort_by.append('size')
+
+    if args.all:
+        number = len(records)
+
+    if not sort_by: sort_by = 'added'
+
+    display_objects(records, search=search, sort=sort_by, number=number,
+                    verbose=verbose, reverse=reverse, display='search')
 
     if size:
         filter = [x for x in records if type(x.size)==int]
         total = sum([x.size for x in filter])
         print(f'Known size for {len(filter):,} of {len(records):,} records: {show_file_size(total)}.')
-
-    df = get_dataframe(records)
 
     success(f'Completed in {showtime(clock)}.')
 

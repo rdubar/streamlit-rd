@@ -47,14 +47,13 @@ def showtime(s: float) -> str:
     return f'{s:.5f} seconds' if s < 10 else datetime.timedelta(seconds=s)
 
 
-def get_movies(search, default=DEFAULT_FILE, verbose=False):
+def get_movies(search, verbose=False):
     # is search term a file?
     clock = time.perf_counter()
     if verbose: print('Verbose mode. Does not do anything yet.')
-    print(Fore.MAGENTA + f'Getting movies: {search}')
-    if not search:
-        search = default
-    if not search:
+    if search and search != []:
+        print(Fore.MAGENTA + f'Getting movies: {search}')
+    else:
         search = input(Fore.CYAN + "Enter URL, filename or search term: ")
     if type(search) == str and os.path.exists(search):
         with open(search) as f:
@@ -73,10 +72,7 @@ def get_movies(search, default=DEFAULT_FILE, verbose=False):
     completed = 0
 
     def s(x):
-        if x == 1:
-            return ''
-        else:
-            return 's'
+        return '' if x == 1 else 's'
 
     # print(lines)
     for i in lines:

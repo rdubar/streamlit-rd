@@ -169,71 +169,8 @@ def read_toml(path=TOML_FILE, section=None, debug=False):
     return data
 
 
-def custom_key(obj, attr_name):
-    """ ChatGPT derived function to enable sorting of list of objects of mixed types by an attribute """
-    elem = getattr(obj, attr_name, None)
-    if elem is None:
-        return (0, None)
-    elif isinstance(elem, int):
-        return (1, elem)
-    elif isinstance(elem, str):
-        return (2, elem.lower())
-    elif isinstance(elem, datetime):
-        return (3, elem)
-    else:
-        return (4, str(elem))
 
-
-def sort_records(records, attrib='added', reverse=True, display=True, number=5, verbose=False):
-    """ Sort list of objects by attribute, with display option: can be mixed types """
-    r = f' (reversed)' if reverse else ''
-    count = len(records)
-    if number > count: number = count
-    if display or verbose: print(f'Showing {number:,} of {count:,} records sorted by "{attrib}"{r}.')
-    sorted_list = sorted(records, key=lambda x: custom_key(x, attrib), reverse=reverse)
-    if number > count or verbose: number = count
-    if display or verbose:
-        for i in range(number):
-            print(sorted_list[i])
-    return sorted_list
-
-
-def search_records(text, data, display=True, verbose=False, attrib=None, match=None):
-    """
-    :param text: text to search for
-    :param data: list of items to search
-    :param display: if True, print items
-    :param verbose: if True, print full info about result
-    :param attrib: if present, filter results by attrib
-    :param match: if present, only show results matcching this text
-    :return:
-    """
-
-    if attrib:
-        filtered = [x for x in data if hasattr(x, attrib)]
-        if match: filtered = [x for x in filtered if getattr((x, attrib)) == match]
-        if display:
-            m = f'="{match}"' if match else ''
-            print(f'Filtered {len(filtered)} of len(data) objects for "attrib"{m}')
-        data = filtered
-
-    matches = []
-    for object in data:
-        if text in object.search:
-            matches.append(object)
-
-    if display:
-        output = f'Found {len(matches):,} matches in {len(data):,} entries for "{text}".'
-        print(output)
-        for x in matches:
-            print(x.display())
-            if verbose: print(x.search)
-        if len(matches) > 10:
-            print(output)
-    return matches
-
-
-def sort_by_attrib_value(objects, attrib='added', reverse=False, number=0, display=True, verbose=False):
+def sort_by_attrib_value(objects, attrib='added', reverse=False, verbose=False):
     """"
     Sort list of objects by attrib, with objects that have that attrib first,
     either in normal or reverse order, then objects where attrib is None, then objects without attrib.
@@ -256,14 +193,52 @@ def sort_by_attrib_value(objects, attrib='added', reverse=False, number=0, displ
         l2 = len(list2)
         l3 = len(list3)
         print(f'sort_by_attrib_value: "{attrib}" has_attr({l1}), none_or_null({l2}), no_attr({l3}).')
-    if display or verbose:
-        r = f' (reversed)' if reverse else ''
-        if number > total: number = total
-        print(f'Showing {number:,} of {total:,} items sorted by "{attrib}"{r}.')
-        for i in range(number):
-            print(sorted_list[i])
     return sorted_list
 
+
+def ss(x):
+    """ for pluralising words """
+    return '' if x==1 else 's'
+
+
+def display_objects(objects, search=None, sort=None, number=5, verbose=False, reverse=False, display=True):
+    """ Universeal function to show objects """
+    total = len(objects)
+
+    if search:
+        if type(search) == list: search = ' '.join(search)
+        lower = search.lower()
+        n = len(objects)
+        objects = [x for x in objects if search in str(vars(x)).lower()]
+        matches = len(objects)
+    else:
+        matches = 0
+
+    if sort:
+        if type(sort)==str: sort = [ sort ]
+        for attrib in sort:
+            objects = sort_by_attrib_value(objects, attrib=attrib, verbose=verbose, reverse=reverse)
+        sort_str = ','.join(sort)
+
+    if display:
+        n = len(objects)
+        if number == 0 or number == None or number > n: number = n
+
+        text = f'Showing {number:,} of '
+        if matches:
+            text += f'{matches:,} matches for "{lower}" in '
+        text += f'{total:,} records'
+        if sort:
+            text += f' (sorted by: {sort_str})'
+        text += '.'
+        print(text)
+
+        for i in range(number):
+            x = objects[i]
+            print(x)
+            if verbose and hasattr(x,display): print(getattr(x,display))
+
+    return objects
 
 def main():
     print("Rog's Tools.")

@@ -1,7 +1,7 @@
 import os.path, time
 from dataclasses import dataclass, field
 
-from tools.utils import warn, info, success, show_file_size, sort_by_attrib_value, showtime, save_data, load_data
+from tools.utils import warn, info, success, show_file_size, display_objects, showtime, save_data, load_data
 from settings import FILE_OBJECTS
 from tools.remote import remote_command, remote_info
 from datetime import datetime
@@ -42,22 +42,6 @@ class MediaObject:
         return f'{s:>8} {n:>5}  {self.title}'
 
 
-
-
-'''
-def process_remote_results(results):
-    if type(results)==str: results = results.split('\n')
-    object_list = []
-    for info in results:
-        if not '\t' in info or not '.' in info: continue
-        ending = info[info.rfind('.')+1:]
-        if len(ending)>5: continue
-        size, path = info.split('\t',1)
-        object = FileObject(path=path, size=int(size)*1024, info=info)
-        object_list.append(object)
-    return object_list
-'''
-
 def get_file_objects(path=FILE_OBJECTS, update=True):
     if not update:
         file_objects = load_data(path)
@@ -67,14 +51,7 @@ def get_file_objects(path=FILE_OBJECTS, update=True):
     if 'remote_directory' in location_info and os.path.exists(location_info['remote_directory']):
         warn(location_info['remote_directory']+' found locally! Please process directly')
         results = []
-    # else
-    #results = remote_command(command="du -a /mnt/expansion/media")
-    ''' 
-    ip = location_info['hostname']
-    dir = location_info['remote_directory']
-    info(f'Got {len(results):,} results from {ip}:{dir}.')
-    file_objects = process_remote_results(results)
-    '''
+
     file_objects = get_remote_files()
     save_data(path, file_objects)
     return file_objects
@@ -138,15 +115,8 @@ def process_files(update=False, search=None, number=5, reverse=False):
     total_size = sum([x.size for x in file_objects])
     info(f'Found {len(file_objects):,} files totalling {show_file_size(total_size)}.')
 
-    if search:
-        if type(search)==list: search = ' '.join(search)
-        lower = search.lower()
-        matches = [ x for x in file_objects if lower in x.search ]
-        [ print(x) for x in matches ]
-        s = show_file_size(sum([x.size for x in matches]))
-        info(f'Found {len(matches):} matches in {len(file_objects):,} paths for "{search}", totalling ({s}).')
-    else:
-        sort_by_size = sort_by_attrib_value(file_objects, 'size', display=True, number=5, reverse=True)
+    display_objects(file_objects, search=search, number=number,
+                    reverse=reverse)
 
     show_folders(file_objects)
     return file_objects
