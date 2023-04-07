@@ -1,7 +1,7 @@
 import os.path, time
 from dataclasses import dataclass, field
 
-from tools.utils import warn, info, success, show_file_size, display_objects, showtime, save_data, load_data
+from tools.utils import warn, info, success, show_file_size, display_objects, show_time, save_data, load_data
 from settings import FILE_OBJECTS
 from tools.remote import remote_command, remote_info
 from datetime import datetime
@@ -88,7 +88,7 @@ def get_remote_files():
         object = FileObject(path=path, size=int(size), info=info, date=date_obj)
         file_objects.append(object)
     clock = time.perf_counter() - clock
-    success(f'Got {len(file_objects):,} remote paths in {showtime(clock)}.')
+    success(f'Got {len(file_objects):,} remote paths in {show_time(clock)}.')
     return file_objects
 
 
@@ -119,7 +119,23 @@ def process_files(update=False, search=None, number=5, reverse=False):
                     reverse=reverse)
 
     show_folders(file_objects)
+
+    print('Looking for files to purge...')
+    files_to_remove = []
+    for x in file_objects:
+        path = x.path
+        for check in [ '/www.YTS', '/RARBG_DO_NOT_MIRROR.exe', '/RARBG.txt', '/WWW.YIFY-TORRENTS']:
+            if check in path:
+                files_to_remove.append(path)
+                continue
+    text = "rm "
+    for p in files_to_remove:
+        text += f'"{p}" '
+    print(text)
+
+
     return file_objects
+
 
 def main():
     process_files(update=True)

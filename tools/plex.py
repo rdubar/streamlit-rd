@@ -4,7 +4,7 @@ from plexapi.server import PlexServer
 from tqdm import tqdm
 
 from settings import MEDIA_RECORDS, DATAFRAME_FILE, TOML_FILE
-from tools.utils import read_toml, save_data, load_data, showtime, warn
+from tools.utils import read_toml, save_data, load_data, show_time, warn
 from tools.media_record import MediaRecord
 
 PLEX_INFO = read_toml(TOML_FILE, section = 'plex')
@@ -76,9 +76,9 @@ def get_plex_info(update=False, reset=False):
         m.set_plex_info(p)
         new_media_list.append(m)
     save_data(MEDIA_RECORDS, new_media_list)
-    print(f'Updated {len(updated)} items : {updated}')
+    if updated: print(f'Updated {len(updated)} items : {updated}')
     clock = time.perf_counter() - clock
-    print(f'Plex info updated in {showtime(clock)}.')
+    print(f'Plex info updated in {show_time(clock)}.')
     return new_media_list
 
 def main():

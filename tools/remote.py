@@ -2,7 +2,7 @@ import time
 
 import paramiko
 
-from tools.utils import read_toml, warn, success, info, showtime
+from tools.utils import read_toml, warn, success, info, show_time
 from settings import TOML_FILE
 
 def remote_info():

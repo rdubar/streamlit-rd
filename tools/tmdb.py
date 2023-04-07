@@ -2,7 +2,7 @@
 import sys, os
 
 from settings import TOML_FILE, LIBRARY_LIST, DATA_DIR
-from tools.utils import read_toml, load_data, save_data, showtime
+from tools.utils import read_toml, load_data, save_data, show_time
 from tools.media_record import MediaRecord
 from tools.plex import get_plex_info
 

@@ -79,7 +79,7 @@ def get_all_files(root_dir: str, verbose=False, ignore=[], purge=[], quiet=False
         os.remove(p)
     clock = time.perf_counter() - clock
     clear_line()
-    if not quiet: print(f'Got {len(path_list):,} and skipped {len(skipped_list):,} items in {showtime(clock)}.')
+    if not quiet: print(f'Got {len(path_list):,} and skipped {len(skipped_list):,} items in {show_time(clock)}.')
     if verbose: print(f'Skipped list: {skipped_list}')
     return path_list
 
@@ -108,8 +108,8 @@ def get_size_of_files(path_list):
     return size
 
 
-def showtime(s: float) -> str:
-    """ return seconds (s) as H:M:S or seconds < 10 """
+def show_time(s: float) -> str:
+    """ return seconds (s) as seconds of H:M:S """
     if s < 0.1:
         return f'{s:.5f} seconds'
     elif s < 100:

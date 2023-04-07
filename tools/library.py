@@ -1,7 +1,7 @@
 #!/usr/bin/python
 from tools.media_record import MediaRecord
 import os, random, time
-from tools.utils import showtime
+from tools.utils import show_time
 from settings import LIBRARY_LIST
 
 
@@ -37,7 +37,7 @@ def get_library_records(path=LIBRARY_LIST, verbose=True):
     if len(records) == 0:
         print(f'No media records found in {path}')
     clock = time.perf_counter() - clock
-    if verbose: print(f'Found {len(records):,} records from the media list in {showtime(clock)}.')
+    if verbose: print(f'Found {len(records):,} records from the media list in {show_time(clock)}.')
     return records
 
 def main():

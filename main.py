@@ -1,6 +1,6 @@
 import argparse, time
 
-from tools.utils import showtime, display_objects, warn, success, info, show_file_size
+from tools.utils import show_time, display_objects, warn, success, info, show_file_size
 from tools.plex import get_plex_info
 from tools.library import get_library_records
 from tools.password import create_password
@@ -20,7 +20,6 @@ def main():
     p("-a", "--all", help="show all matching", action="store_true")
     p("-f", "--files", help="search files instead of plex info", action="store_true")
     p('-H', '--height', help="sort by height", action="store_true")
-    p("-n", '--number', help="show [5] items", type=int, nargs='?', const=5)
     p("-d", "--dvd", help="show uncompressed DVD rips", action="store_true")
     p("-p", "--password", help="generate a secure password", action="store_true")
     p("-r", "--reverse", help="reverse ordering", action="store_true")
@@ -29,6 +28,8 @@ def main():
     p("-v", "--verbose", help="verbose mode", action="store_true")
     p("--reset", help="reset the library", action="store_true")
     p("--video", help="dowload video", action="store_true")
+    p("-A", '--attrib', help="sort by [attrib]", type=str, nargs='?', const="updated")
+    p("-n", '--number', help="show [5] items", type=int, nargs='?', const=5)
 
     args = parser.parse_args()
     update = args.update
@@ -42,6 +43,9 @@ def main():
 
     if args.password:
         print(create_password(length=20))
+
+    if args.attrib:
+        sort_by.append(args.attrib)
 
     if args.video:
         get_movies(search)
@@ -87,7 +91,7 @@ def main():
         total = sum([x.size for x in filter])
         print(f'Known size for {len(filter):,} of {len(records):,} records: {show_file_size(total)}.')
 
-    success(f'Completed in {showtime(clock)}.')
+    success(f'Completed in {show_time(clock)}.')
 
 if __name__ == '__main__':
     main()
