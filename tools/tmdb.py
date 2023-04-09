@@ -3,7 +3,7 @@ import sys, os
 
 from settings import TOML_FILE, LIBRARY_LIST, DATA_DIR
 from tools.utils import read_toml, load_data, save_data, show_time
-from tools.media_record import MediaRecord
+#from tools.media_record import MediaRecord
 from tools.plex import get_plex_info
 
 secrets = read_toml(TOML_FILE, section = 'tmdb')
@@ -56,6 +56,8 @@ def search_tmdb(text, year=None):
         return None
     
 def add_media_list(path=TMDB_RAW_DATA, media=LIBRARY_LIST, update=False):
+
+    if update: print('Updating TMDB info...')
 
     tmdb_dict = load_data(path) or {}
     if not update: return tmdb_dict

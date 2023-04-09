@@ -2,7 +2,7 @@ import os.path, time
 from dataclasses import dataclass, field
 
 from tools.utils import warn, info, success, show_file_size, display_objects, show_time, save_data, load_data
-from settings import FILE_OBJECTS
+from settings import FILE_OBJECTS, IGNORE_LIST
 from tools.remote import remote_command, remote_info
 from datetime import datetime
 
@@ -53,6 +53,7 @@ def get_file_objects(path=FILE_OBJECTS, update=True):
         results = []
 
     file_objects = get_remote_files()
+
     save_data(path, file_objects)
     return file_objects
 
@@ -61,14 +62,17 @@ def check_incoming():
     results = remote_command(command='/home/pi/usr/media/incoming.py', display=False)
     print(results)
 
-def get_remote_files():
+def get_remote_files(ignore = IGNORE_LIST):
     print('Getting remote files...')
     clock = time.perf_counter()
     file_objects = []
+    ignored_count = 0
+    ignored_size = 0
     output = remote_command(command='ls -lR /mnt/expansion/media', display=False)
     directory = ''
     current_year = datetime.now().strftime("%Y")
     for line in output.split('\n'):
+
         # line format: -rwxr-xr-x 1 pi pi 242984628 Jul 16  2019 Veep S04E10.mp4
         if len(line) > 0 and line[0]=='/':
             directory = line[:-1]
@@ -81,6 +85,16 @@ def get_remote_files():
         if size == 262144: continue # hack to ignore folders
         name = ' '.join(parts[8:])
         path = directory+'/'+name
+
+        ignore_flag = False
+        for check in ignore:
+            if check in path:
+                ignore_flag = True
+                ignored_count += 1
+                ignored_size += size
+                break
+        if ignore_flag: continue
+
         if ':' in parts[7]: # the file's date is this year
             parts[7] = current_year
         date_str = ' '.join(parts[5:8])
@@ -89,6 +103,8 @@ def get_remote_files():
         file_objects.append(object)
     clock = time.perf_counter() - clock
     success(f'Got {len(file_objects):,} remote paths in {show_time(clock)}.')
+    if ignored_count:
+        print(f'Ignored {ignored_count:,} files totalling {(show_file_size(ignored_size))}.')
     return file_objects
 
 
@@ -115,23 +131,10 @@ def process_files(update=False, search=None, number=5, reverse=False):
     total_size = sum([x.size for x in file_objects])
     info(f'Found {len(file_objects):,} files totalling {show_file_size(total_size)}.')
 
-    display_objects(file_objects, search=search, number=number,
-                    reverse=reverse)
+    display_objects(file_objects, search=search, number=number, sort='size',
+            reverse=not reverse)
 
     show_folders(file_objects)
-
-    print('Looking for files to purge...')
-    files_to_remove = []
-    for x in file_objects:
-        path = x.path
-        for check in [ '/www.YTS', '/RARBG_DO_NOT_MIRROR.exe', '/RARBG.txt', '/WWW.YIFY-TORRENTS']:
-            if check in path:
-                files_to_remove.append(path)
-                continue
-    text = "rm "
-    for p in files_to_remove:
-        text += f'"{p}" '
-    print(text)
 
 
     return file_objects

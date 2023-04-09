@@ -9,8 +9,6 @@ from tools.files import process_files, FileObject
 from tools.download_video import get_movies
 
 def main():
-    #plex.main()
-
     clock = time.perf_counter()
     info("Rog's Plex Media Processor.")
 
@@ -37,7 +35,7 @@ def main():
     search = args.search
     verbose = args.verbose
     size = args.size
-    number = args.number or 5
+    number = args.number
     reverse = False if args.reverse else True
     sort_by = []
 
@@ -61,7 +59,7 @@ def main():
     library_records = get_library_records()
 
     records = sorted(media_records + library_records, key=lambda x: x.entry)
-    df = get_dataframe(records)
+    #df = get_dataframe(records)
 
     if not records:
         warn('No Records Found. Aborting.')
@@ -81,7 +79,12 @@ def main():
     if args.all:
         number = len(records)
 
-    if not sort_by: sort_by = 'added'
+    if not sort_by and search==[]: sort_by = 'added'
+
+    if search and not number:
+        number = 20
+    elif not search:
+        number = 5
 
     display_objects(records, search=search, sort=sort_by, number=number,
                     verbose=verbose, reverse=reverse, display='search')
