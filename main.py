@@ -1,12 +1,14 @@
-import argparse, time
+import argparse
+import time
 
 from tools.utils import show_time, display_objects, warn, success, info, show_file_size
 from tools.plex import get_plex_info
 from tools.library import get_library_records
 from tools.password import create_password
-from tools.dataframe import get_dataframe
-from tools.files import process_files, FileObject
+# from tools.dataframe import get_dataframe
+from tools.files import process_files
 from tools.download_video import get_movies
+
 
 def main():
     clock = time.perf_counter()
@@ -25,7 +27,7 @@ def main():
     p("-u", "--update", help="update the library", action="store_true")
     p("-v", "--verbose", help="verbose mode", action="store_true")
     p("--reset", help="reset the library", action="store_true")
-    p("--video", help="dowload video", action="store_true")
+    p("--video", help="download video", action="store_true")
     p("-A", '--attrib', help="sort by [attrib]", type=str, nargs='?', const="updated")
     p("-n", '--number', help="show [5] items", type=int, nargs='?', const=5)
 
@@ -59,14 +61,14 @@ def main():
     library_records = get_library_records()
 
     records = sorted(media_records + library_records, key=lambda x: x.entry)
-    #df = get_dataframe(records)
+    # df = get_dataframe(records)
 
     if not records:
         warn('No Records Found. Aborting.')
         return
 
     if args.dvd:
-        dvds = [ x for x in records if 'mpeg2video' in x.search ]
+        dvds = [x for x in records if 'mpeg2video' in x.search]
         print(f"Found {len(dvds):,} uncompressed dvd titles in {len(records):,} records.")
         records = dvds
 
@@ -79,22 +81,24 @@ def main():
     if args.all:
         number = len(records)
 
-    if not sort_by and search==[]: sort_by = 'added'
+    if not sort_by and search == []:
+        sort_by = 'added'
 
     if search and not number:
         number = 20
-    elif not search:
+    elif not number and not search:
         number = 5
 
     display_objects(records, search=search, sort=sort_by, number=number,
                     verbose=verbose, reverse=reverse, display='search')
 
     if size:
-        filter = [x for x in records if type(x.size)==int]
-        total = sum([x.size for x in filter])
-        print(f'Known size for {len(filter):,} of {len(records):,} records: {show_file_size(total)}.')
+        filter_ = [x for x in records if type(x.size) == int]
+        total = sum([x.size for x in filter_])
+        print(f'Known size for {len(filter_):,} of {len(records):,} records: {show_file_size(total)}.')
 
     success(f'Completed in {show_time(clock)}.')
+
 
 if __name__ == '__main__':
     main()
