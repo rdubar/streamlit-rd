@@ -9,6 +9,14 @@ from tools.password import create_password
 from tools.files import process_files
 from tools.download_video import get_movies
 
+# Todo: Additional features
+#   databases as functions, loaded only when necessary
+#   Message facility
+#   AWS demo
+#   Implement bignums & random text?
+#   Implement TMDB and wikipedia info
+#   Add ish.js clock
+#   Favicon not working
 
 def main():
     clock = time.perf_counter()
