@@ -131,11 +131,11 @@ def show_folders(file_objects=file_objects(), number=5, search=None):
     for i in range(number):
         print(media_objects[i])
 
-def show_large_others(objects=file_objects(), verbose=False):
+def show_large_others(objects=file_objects(), verbose=False, minimum=500 * 1000 * 1000):
     # looking for large 'other' files
-    halfmeg = 500 * 1000 * 1000
-    matches = [ x for x in objects if 'other' in x.path and x.size > halfmeg ]
-    output = f"Found {len(matches):,} 'other' files larger than {show_file_size(halfmeg)}."
+    matches = [ x for x in objects if 'other' in x.path and x.size > minimum ]
+    total = show_file_size(sum([x.size for x in matches]))
+    output = f"Found {len(matches):,} 'other' files larger than {show_file_size(minimum)} (totalling {total})."
     print(output)
     if verbose:
         [print(x) for x in matches]

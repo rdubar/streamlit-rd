@@ -2,12 +2,11 @@
 
 import os, time, pickle, toml
 import timeago
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from settings import TOML_PATH
 
 from colorama import init, Fore
-
 init(autoreset=True)
 
 
@@ -33,21 +32,21 @@ def time_ago(date):
 
 
 def clear_line(n=1):
-    LINE_UP = '\033[1A'
-    LINE_CLEAR = '\x1b[2K'
+    line_up = '\033[1A'
+    line_clear = '\x1b[2K'
     for i in range(n):
-        print(LINE_UP, end=LINE_CLEAR)
+        print(line_up, end=line_clear)
 
 
-def get_modified_time(path, str=False):
-    ''' return modified file time of path, or zero if file does not exist '''
+def get_modified_time(path, text=False):
+    """ return modified file time of path, or zero if file does not exist """
     if not os.path.exists(path):
         return 0
     t = os.path.getmtime(path)
-    return time.ctime(t) if str else t
+    return time.ctime(t) if text else t
 
 
-def get_all_files(root_dir: str, verbose=False, ignore=[], purge=[], quiet=False) -> dict:
+def get_all_files(root_dir: str, verbose=False, ignore=None, purge=None, quiet=False) -> dict:
     ''' Returns a list of paths for all files recursively at root_dir '''
     clock = time.perf_counter()
     print(f'Getting all files from: "{root_dir}" ...Please wait...')
@@ -115,7 +114,7 @@ def show_time(s: float) -> str:
     elif s < 100:
         return f'{s:.2f} seconds'
     else:
-        return datetime.timedelta(seconds=round(s))
+        return timedelta(seconds=round(s))
 
 
 def save_data(path, data):
@@ -134,7 +133,7 @@ def save_data(path, data):
     if os.path.exists(backup): os.remove(backup)
     if os.path.exists(path): os.rename(path, backup)
     os.rename(temp, path)
-    modified = get_modified_time(path, str=True)
+    modified = get_modified_time(path, text=True)
     log(f'Saved {len(data):,} records to {path}, {modified}.')
     return True
 
@@ -143,7 +142,7 @@ def load_data(path):
     if not os.path.exists(path):
         warn(f'No data file at {path}')
         return []
-    modified = time_ago(get_modified_time(path, str=False))
+    modified = time_ago(get_modified_time(path, text=False))
     with open(path, 'rb') as handle:
         try:
             data = pickle.load(handle)
@@ -204,7 +203,7 @@ def ss(x):
 def display_objects(objects, search=None, sort=None, number=5, verbose=False, reverse=False, display=True):
     """ Universeal function to show objects """
     total = len(objects)
-
+    lower = ''
     if search:
         if type(search) == list: search = ' '.join(search)
         lower = search.lower()
