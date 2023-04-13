@@ -2,9 +2,16 @@ import os.path, time
 from dataclasses import dataclass, field
 
 from tools.utils import warn, info, success, show_file_size, display_objects, show_time, save_data, load_data
-from settings import FILE_OBJECTS, IGNORE_LIST
+from settings import FILE_OBJECTS_PATH, IGNORE_LIST
 from tools.remote import remote_command, remote_info
 from datetime import datetime
+
+FILE_OBJECTS = []
+def file_objects(update=False):
+    global FILE_OBJECTS
+    if update or not FILE_OBJECTS:
+        FILE_OBJECTS = get_file_objects(update=update)
+    return FILE_OBJECTS
 
 @dataclass(order=True)
 class FileObject:
@@ -42,7 +49,7 @@ class MediaObject:
         return f'{s:>8} {n:>5}  {self.title}'
 
 
-def get_file_objects(path=FILE_OBJECTS, update=True):
+def get_file_objects(path=FILE_OBJECTS_PATH, update=True):
     if not update:
         file_objects = load_data(path)
     if not update and file_objects:
@@ -108,7 +115,7 @@ def get_remote_files(ignore = IGNORE_LIST):
     return file_objects
 
 
-def show_folders(file_objects, number=5):
+def show_folders(file_objects=file_objects(), number=5, search=None):
     folders = {}
     for x in file_objects:
         title = x.title
@@ -124,24 +131,32 @@ def show_folders(file_objects, number=5):
     for i in range(number):
         print(media_objects[i])
 
-def process_files(update=False, search=None, number=5, reverse=False):
+def show_large_others(objects=file_objects(), verbose=False):
+    # looking for large 'other' files
+    halfmeg = 500 * 1000 * 1000
+    matches = [ x for x in objects if 'other' in x.path and x.size > halfmeg ]
+    output = f"Found {len(matches):,} 'other' files larger than {show_file_size(halfmeg)}."
+    print(output)
+    if verbose:
+        [print(x) for x in matches]
+        print(output)
+    return matches
+
+
+def process_files(update=False, search=None, number=5, reverse=False, verbose=False):
     """ get file objects, search if necessary """
     check_incoming()
     file_objects = get_file_objects(update=update)
     total_size = sum([x.size for x in file_objects])
     info(f'Found {len(file_objects):,} files totalling {show_file_size(total_size)}.')
-
-    display_objects(file_objects, search=search, number=number, sort='size',
-            reverse=not reverse)
-
-    show_folders(file_objects)
-
-
     return file_objects
+
+def show_files(objects=file_objects(), search=None, number=5, sort='size', reverse=False):
+    display_objects(objects, search=search, number=number, sort=sort, reverse=reverse)
 
 
 def main():
-    process_files(update=True)
+    process_files(update=True, verbose=True)
 
 if __name__== "__main__" :
     main()

@@ -2,21 +2,22 @@ import argparse
 import time
 
 from tools.utils import show_time, display_objects, warn, success, info, show_file_size
-from tools.plex import get_plex_info
+from tools.plex import get_plex_info, media_objects
 from tools.library import get_library_records
 from tools.password import create_password
 # from tools.dataframe import get_dataframe
-from tools.files import process_files
+from tools.files import process_files, show_folders, show_large_others, file_objects, show_files
 from tools.download_video import get_movies
 
 # Todo: Additional features
 #   databases as functions, loaded only when necessary
 #   Message facility
 #   AWS demo
-#   Implement bignums & random text?
+#   Implement big numbers & random text?
 #   Implement TMDB and wikipedia info
 #   Add ish.js clock
 #   Favicon not working
+
 
 def main():
     clock = time.perf_counter()
@@ -27,8 +28,10 @@ def main():
     p("search", help="search the library", type=str, nargs='*')
     p("-a", "--all", help="show all matching", action="store_true")
     p("-f", "--files", help="search files instead of plex info", action="store_true")
+    p("-F", "--folders", help="search folders instead of plex info", action="store_true")
     p('-H', '--height', help="sort by height", action="store_true")
     p("-d", "--dvd", help="show uncompressed DVD rips", action="store_true")
+    p("-o", "--others", help="show others", action="store_true")
     p("-p", "--password", help="generate a secure password", action="store_true")
     p("-r", "--reverse", help="reverse ordering", action="store_true")
     p("-s", "--size", help="show total file sizes", action="store_true")
@@ -49,8 +52,29 @@ def main():
     reverse = False if args.reverse else True
     sort_by = []
 
+    if reset or update:
+        media_objects(update=update, reset=reset)
+        file_objects(update=update or reset)
+
     if args.password:
         print(create_password(length=20))
+
+    done = False
+
+    if args.files:
+        show_files(search=search, reverse=reverse)
+        done = True
+
+    if args.folders:
+        show_folders(search=search)
+        done = True
+
+    if args.others:
+        show_large_others(verbose=verbose)
+        done = True
+
+    if done:
+        return
 
     if args.attrib:
         sort_by.append(args.attrib)
@@ -59,13 +83,10 @@ def main():
         get_movies(search)
         return
 
-    if args.files:
-        process_files(update=update, search=search)
-        return
     elif update:
         process_files(update=update, number=number, reverse=reverse)
 
-    media_records = get_plex_info(update=update, reset=reset)
+    media_records = media_objects()
     library_records = get_library_records()
 
     records = sorted(media_records + library_records, key=lambda x: x.entry)

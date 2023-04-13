@@ -3,10 +3,10 @@ import time
 import paramiko
 
 from tools.utils import read_toml, warn, success, info, show_time
-from settings import TOML_FILE
+from settings import TOML_PATH
 
 def remote_info():
-    return read_toml(TOML_FILE, section = 'remote')
+    return read_toml(TOML_PATH, section ='remote')
 
 def remote_command(command=None, credentials=remote_info(), display=True, secret=False):
     """ Execute command remotely at site in credentials """

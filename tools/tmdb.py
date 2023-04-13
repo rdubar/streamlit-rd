@@ -1,12 +1,12 @@
 #!/usr/bin/python
 import sys, os
 
-from settings import TOML_FILE, LIBRARY_LIST, DATA_DIR
+from settings import TOML_PATH, LIBRARY_PTH, DATA_DIR
 from tools.utils import read_toml, load_data, save_data, show_time
 #from tools.media_record import MediaRecord
 from tools.plex import get_plex_info
 
-secrets = read_toml(TOML_FILE, section = 'tmdb')
+secrets = read_toml(TOML_PATH, section ='tmdb')
 
 # https://github.com/AnthonyBloomer/tmdbv3api
 
@@ -55,7 +55,7 @@ def search_tmdb(text, year=None):
     else:
         return None
     
-def add_media_list(path=TMDB_RAW_DATA, media=LIBRARY_LIST, update=False):
+def add_media_list(path=TMDB_RAW_DATA, media=LIBRARY_PTH, update=False):
 
     if update: print('Updating TMDB info...')
 

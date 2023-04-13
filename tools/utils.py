@@ -4,7 +4,7 @@ import os, time, pickle, toml
 import timeago
 from datetime import datetime
 
-from settings import TOML_FILE
+from settings import TOML_PATH
 
 from colorama import init, Fore
 
@@ -154,7 +154,7 @@ def load_data(path):
     return data
 
 
-def read_toml(path=TOML_FILE, section=None, debug=False):
+def read_toml(path=TOML_PATH, section=None, debug=False):
     """ Read an TOML file, return a dictionary """
     if not os.path.exists(path):
         warn(f'read_toml: file not found: {path}')
@@ -232,6 +232,10 @@ def display_objects(objects, search=None, sort=None, number=5, verbose=False, re
             text += f' (sorted by: {sort_str})'
         text += '.'
         print(text)
+
+        if number > 1000:
+            print('NUMBER OVER 1,000')
+            return objects
 
         for i in range(number):
             x = objects[i]

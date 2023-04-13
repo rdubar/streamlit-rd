@@ -3,11 +3,18 @@ import time
 from plexapi.server import PlexServer
 from tqdm import tqdm
 
-from settings import MEDIA_RECORDS, DATAFRAME_FILE, TOML_FILE
+from settings import MEDIA_RECORDS_PATH, DATAFRAME_PATH, TOML_PATH
 from tools.utils import read_toml, save_data, load_data, show_time, warn
 from tools.media_record import MediaRecord
 
-PLEX_INFO = read_toml(TOML_FILE, section = 'plex')
+PLEX_INFO = read_toml(TOML_PATH, section ='plex')
+
+MEDIA_OBJECTS = []
+def media_objects(update=False, reset=False):
+    global MEDIA_OBJECTS
+    if update or reset or not MEDIA_OBJECTS:
+        MEDIA_OBJECTS = get_plex_info(update=update, reset=reset)
+    return MEDIA_OBJECTS
 
 
 def connect_to_plex(    server_ip = None,
@@ -54,7 +61,7 @@ def get_plex_media():
     return plex_media
 
 def get_plex_info(update=False, reset=False):
-    media_objects = load_data(MEDIA_RECORDS)
+    media_objects = load_data(MEDIA_RECORDS_PATH)
     if not (update or reset): return media_objects
     clock = time.perf_counter()
     plex_records = get_plex_media()
@@ -75,7 +82,7 @@ def get_plex_info(update=False, reset=False):
         m = MediaRecord(title = p.title)
         m.set_plex_info(p)
         new_media_list.append(m)
-    save_data(MEDIA_RECORDS, new_media_list)
+    save_data(MEDIA_RECORDS_PATH, new_media_list)
     if updated: print(f'Updated {len(updated)} items : {updated}')
     clock = time.perf_counter() - clock
     print(f'Plex info updated in {show_time(clock)}.')

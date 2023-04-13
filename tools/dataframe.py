@@ -2,7 +2,7 @@ import os
 import pandas as pd
 import numpy as np
 
-from settings import DATAFRAME_FILE
+from settings import DATAFRAME_PATH
 from tools.utils import show_file_size, sort_by_attrib_value
 
 def get_quality(x):
@@ -20,7 +20,7 @@ def get_quality(x):
         return 'UQ'
     return x.upper()
 
-def get_dataframe(data, path=DATAFRAME_FILE):
+def get_dataframe(data, path=DATAFRAME_PATH):
     """
     Convert list of media objects into pandas dataframe
     :type path: object
