@@ -84,7 +84,7 @@ def main():
         return
 
     elif update:
-        process_files(update=update, number=number, reverse=reverse)
+        process_files(update=update)
 
     media_records = media_objects()
     library_records = get_library_records()

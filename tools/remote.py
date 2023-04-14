@@ -1,12 +1,12 @@
-import time
-
 import paramiko
 
-from tools.utils import read_toml, warn, success, info, show_time
+from tools.utils import read_toml, warn
 from settings import TOML_PATH
 
+
 def remote_info():
-    return read_toml(TOML_PATH, section ='remote')
+    return read_toml(TOML_PATH, section='remote')
+
 
 def remote_command(command=None, credentials=remote_info(), display=True, secret=False):
     """ Execute command remotely at site in credentials """
@@ -39,7 +39,8 @@ def remote_command(command=None, credentials=remote_info(), display=True, secret
     # close SSH connection
     ssh.close()
 
-    if display: print(results)
+    if display:
+        print(results)
 
     return results
 
@@ -47,5 +48,6 @@ def remote_command(command=None, credentials=remote_info(), display=True, secret
 def main():
     print(remote_command('ls'))
 
-if __name__== "__main__" :
+
+if __name__ == "__main__":
     main()

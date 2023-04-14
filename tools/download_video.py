@@ -1,13 +1,14 @@
 #!/usr/bin/python
+import os
+import argparse
+import time
+import datetime
 
-import os, argparse, time, datetime
+from requests_html import HTMLSession
 from yt_dlp import YoutubeDL
-
 from colorama import init, Fore
 
 init(autoreset=True)
-
-from requests_html import HTMLSession
 
 
 def get_title_from_url(url):
@@ -22,10 +23,11 @@ SAVE_TO = [
 DEFAULT_FILE = '/home/pi/usr/media/data/movies.txt'
 
 
-def set_directory(*dirs, default=SAVE_TO):
-    '''
-    Set directory to the first available from the list provided
-    '''
+def set_directory(*dirs, default=None):
+    """ Set directory to the first available from the list provided """
+    global SAVE_TO
+    if not default:
+        default = SAVE_TO
     if not dirs:
         dirs = default
     if type(dirs) != list:
@@ -35,22 +37,23 @@ def set_directory(*dirs, default=SAVE_TO):
             try:
                 os.chdir(directory)
                 break
-            except:
-                print(Fore.RED + f'Failed to change directory to {directory}')
+            except Exception as e:
+                print(Fore.RED + f'Failed to change directory to {directory} - {e}')
     else:
         print(Fore.RED + 'Unable to set output directory to {directory}.')
     print(Fore.BLUE + 'Output directory: ', os.getcwd())
 
 
 def showtime(s: float) -> str:
-    ''' return seconds (s) as H:M:S or seconds < 10 '''
+    """ return seconds (s) as H:M:S or seconds < 10 """
     return f'{s:.5f} seconds' if s < 10 else datetime.timedelta(seconds=s)
 
 
 def get_movies(search, verbose=False):
     # is search term a file?
     clock = time.perf_counter()
-    if verbose: print('Verbose mode. Does not do anything yet.')
+    if verbose:
+        print('Verbose mode. Does not do anything yet.')
     if search and search != []:
         print(Fore.MAGENTA + f'Getting movies: {search}')
     else:
@@ -121,14 +124,15 @@ def main():
     parser.add_argument("-v", "--verbose", help="increase output verbosity", action="store_true")
     args = parser.parse_args()
     verbose = args.verbose
-    if verbose: print(args)
+    if verbose:
+        print(args)
 
     if args.subs:
         set_get_subtitles()
 
     if args.file is not None:
         search = args.file
-    elif args.search == []:
+    elif not args.search:
         search = input(Fore.CYAN + "Enter URL, filename or search term: ")
     else:
         search = args.search

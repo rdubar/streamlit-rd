@@ -1,20 +1,19 @@
 #!/usr/bin/python
-import sys, os
+import sys
+import os
 
-from settings import TOML_PATH, LIBRARY_PTH, DATA_DIR
-from tools.utils import read_toml, load_data, save_data, show_time
-#from tools.media_record import MediaRecord
+from settings import TOML_PATH, DATA_DIR, LIBRARY_PATH
+from tools.utils import read_toml, load_data, save_data
 from tools.plex import get_plex_info
 
-secrets = read_toml(TOML_PATH, section ='tmdb')
-
-# https://github.com/AnthonyBloomer/tmdbv3api
-
 from tmdbv3api import TMDb, Movie
+secrets = read_toml(TOML_PATH, section='tmdb')
 tmdb = TMDb()
 tmdb.api_key = secrets['api_key']
 tmdb.language = 'en'
 tmdb.debug = True
+
+# https://github.com/AnthonyBloomer/tmdbv3api
 
 movie = Movie()
 
@@ -33,7 +32,7 @@ def search_tmdb(text, year=None):
             return None     
 
     # try for a name search
-    if  (not year) and len(text) > 6 and text[-1]==')' and text[-6]=='(':
+    if (not year) and len(text) > 6 and text[-1] == ')' and text[-6] == '(':
         year = text[-5:-2]
         title = text[:-6]
     else:
@@ -46,7 +45,8 @@ def search_tmdb(text, year=None):
         print(f'TMDB error: {e}')
         return None
 
-    if year: search = [x for x in search if year in x.release_date ]
+    if year:
+        search = [x for x in search if year in x.release_date]
 
     print(f'Found {len(search)} matches for "{text}".')
     
@@ -55,22 +55,23 @@ def search_tmdb(text, year=None):
     else:
         return None
     
-def add_media_list(path=TMDB_RAW_DATA, media=LIBRARY_PTH, update=False):
 
-    if update: print('Updating TMDB info...')
+def add_media_list(path=TMDB_RAW_DATA, media=LIBRARY_PATH, update=False):
 
+    if update:
+        print('Updating TMDB info...')
     tmdb_dict = load_data(path) or {}
-    if not update: return tmdb_dict
-
+    if not update:
+        return tmdb_dict
     if type(media) == str and os.path.exists(media):
         with open(media, 'r') as f:
             lines = f.read().splitlines()
         media = [x.split('   ')[0] for x in lines]
 
-
     for item in media:
         title = item.title
-        if title in tmdb_dict and tmdb_dict[title]: continue
+        if title in tmdb_dict and tmdb_dict[title]:
+            continue
         data = search_tmdb(title)
         tmdb_dict[title] = data
 
@@ -78,12 +79,12 @@ def add_media_list(path=TMDB_RAW_DATA, media=LIBRARY_PTH, update=False):
     
     return tmdb_dict
 
+
 def main():
     print("Rog's TMDB Tool.")
     plex_data = get_plex_info()
     records = add_media_list(media=plex_data, update=True)
     
-
     if len(sys.argv) > 1:
         search = ' '.join(sys.argv[1:]).lower()
         print(f'Searching {len(records):,} records for "{search}".')
@@ -93,5 +94,6 @@ def main():
                 print(value)
                 print()
 
-if __name__== "__main__" :
+
+if __name__ == "__main__":
     main()
