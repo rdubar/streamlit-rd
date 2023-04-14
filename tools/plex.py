@@ -69,24 +69,30 @@ def get_plex_info(update=False, reset=False, verbose=False, debug=True):
         print('RESETTING ALL RECORDS.')
         media_objects = []
     media_dict = { str(x.plex):x for x in media_objects }
-    new_media_list = []
+    unchanged = []
     updated = []
-    for p in tqdm(plex_records, desc='Getting plex media info'):
+    new = []
+    for p in plex_records:
         index = str(p.ratingKey)
         if index in media_dict:
             if p.addedAt <= media_dict[index].added:
                 #print(f'Not changed {p.title}, last updated {media_dict[index].added}')
-                new_media_list.append(media_dict[index])
+                unchanged.append(media_dict[index])
                 continue
             else:
                 if debug: print(f'Updating {p.title}, last updated {media_dict[index].added}')
                 updated.append(media_dict[index].entry)
-        elif debug:
-            print(f'New entry {p.title} ({index})')
-        m = MediaRecord(title = p.title)
-        m.set_plex_info(p)
-        new_media_list.append(m)
-    # TODO: Show records unchanged, updated, added and removed from Plex
+        else:
+            if debug: print(f'New entry {p.title} ({index})')
+            new.append(p)
+    print(f'Checked {len(media_dict):,} records. Found {len(unchanged):,} unchanged, {len(updated):,} updated, {len(new):,} new.')
+    new_media_list = unchanged
+    to_check = updated + new
+    if to_check:
+        for p in tqdm(to_check, desc='Updating Plex Info'):
+            m = MediaRecord(title = p.title)
+            m.set_plex_info(p)
+            new_media_list.append(m)
     save_data(MEDIA_RECORDS_PATH, new_media_list)
     if updated: print(f'Updated {len(updated)} items : {updated}')
     clock = time.perf_counter() - clock
