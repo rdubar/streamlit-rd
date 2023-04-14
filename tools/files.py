@@ -122,7 +122,7 @@ def get_remote_files(ignore=IGNORE_LIST):
     return file_obj
 
 
-def show_folders(obj=None, number=5, search=None, reverse=False):
+def show_folders(obj=None, number=5, search=None, reverse=False, verbose=True):
     if obj is None:
         obj = file_objects()
     folders = {}
@@ -147,11 +147,14 @@ def show_folders(obj=None, number=5, search=None, reverse=False):
             if lower in x.title.lower():
                 matches.append(x)
         info(f'Showing {len(matches)} of {total:,} folders:')
+        # TODO: implement verbose for search folders
         [print(x) for x in matches]
         return matches
     else:
         for i in range(number):
             print(media_objects[i])
+            if verbose:
+                [print(f"{x.split('/')[-1]}") for x in media_objects[i].paths]
         return media_objects
 
 def show_large_others(obj=None, verbose=False, minimum=500 * 1000 * 1000):

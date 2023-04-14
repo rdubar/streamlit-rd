@@ -66,7 +66,7 @@ def main():
         done = True
 
     if args.folders:
-        show_folders(search=search, reverse=reverse)
+        show_folders(search=search, reverse=reverse, verbose=verbose)
         done = True
 
     if args.others:
