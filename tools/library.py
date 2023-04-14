@@ -5,8 +5,8 @@ from tools.utils import show_time
 from settings import LIBRARY_PATH
 
 
-
 def get_library_records(path=LIBRARY_PATH, verbose=True):
+    """ Return list of media objects from the library list. """
     clock = time.perf_counter()
     if not os.path.exists(path):
         print(f'Movie List Path not found: {path}')
@@ -37,10 +37,11 @@ def get_library_records(path=LIBRARY_PATH, verbose=True):
     if len(records) == 0:
         print(f'No media records found in {path}')
     clock = time.perf_counter() - clock
-    if verbose: print(f'Found {len(records):,} records from the media list in {show_time(clock)}.')
+    if verbose: print(f'Found {len(records):,} records from the library list in {show_time(clock)}.')
     return records
 
 def main():
+    """ Test the library records. """
     records = get_library_records()
     n = len(records)
     r = random.randint(0,n)

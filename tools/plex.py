@@ -10,10 +10,10 @@ from tools.media_record import MediaRecord
 PLEX_INFO = read_toml(TOML_PATH, section ='plex')
 
 MEDIA_OBJECTS = []
-def media_objects(update=False, reset=False):
+def media_objects(update=False, reset=False, verbose=False):
     global MEDIA_OBJECTS
     if update or reset or not MEDIA_OBJECTS:
-        MEDIA_OBJECTS = get_plex_info(update=update, reset=reset)
+        MEDIA_OBJECTS = get_plex_info(update=update, reset=reset, verbose=verbose)
     return MEDIA_OBJECTS
 
 
@@ -60,7 +60,7 @@ def get_plex_media():
     print(f'Received {len(plex_media):,} objects from Plex in {clock:.2f} seconds.')
     return plex_media
 
-def get_plex_info(update=False, reset=False):
+def get_plex_info(update=False, reset=False, verbose=False, debug=True):
     media_objects = load_data(MEDIA_RECORDS_PATH)
     if not (update or reset): return media_objects
     clock = time.perf_counter()
@@ -72,16 +72,21 @@ def get_plex_info(update=False, reset=False):
     new_media_list = []
     updated = []
     for p in tqdm(plex_records, desc='Getting plex media info'):
-        index = p.ratingKey
+        index = str(p.ratingKey)
         if index in media_dict:
-            if p.addedAt < media_dict[index].added:
+            if p.addedAt <= media_dict[index].added:
+                #print(f'Not changed {p.title}, last updated {media_dict[index].added}')
                 new_media_list.append(media_dict[index])
                 continue
             else:
+                if debug: print(f'Updating {p.title}, last updated {media_dict[index].added}')
                 updated.append(media_dict[index].entry)
+        elif debug:
+            print(f'New entry {p.title} ({index})')
         m = MediaRecord(title = p.title)
         m.set_plex_info(p)
         new_media_list.append(m)
+    # TODO: Show records unchanged, updated, added and removed from Plex
     save_data(MEDIA_RECORDS_PATH, new_media_list)
     if updated: print(f'Updated {len(updated)} items : {updated}')
     clock = time.perf_counter() - clock

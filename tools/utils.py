@@ -11,6 +11,10 @@ init(autoreset=True)
 
 
 def warn(text):
+    """
+    :param text: Warning text to print
+    :return: None
+    """
     print(Fore.RED + text)
 
 
@@ -32,6 +36,7 @@ def time_ago(date):
 
 
 def clear_line(n=1):
+    """ Clear [1] line(s) from console """
     line_up = '\033[1A'
     line_clear = '\x1b[2K'
     for i in range(n):
@@ -47,7 +52,7 @@ def get_modified_time(path, text=False):
 
 
 def get_all_files(root_dir: str, verbose=False, ignore=None, purge=None, quiet=False) -> dict:
-    ''' Returns a list of paths for all files recursively at root_dir '''
+    """ Returns a list of paths for all files recursively at root_dir """
     clock = time.perf_counter()
     print(f'Getting all files from: "{root_dir}" ...Please wait...')
     path_list = []
@@ -84,6 +89,7 @@ def get_all_files(root_dir: str, verbose=False, ignore=None, purge=None, quiet=F
 
 
 def show_file_size(bytes, r=1):
+    """ Return human-readable file size """
     if not bytes: return ''
     terabytes = bytes / (10 ** 12)
     if terabytes > 1: return f'{round(terabytes, r):,}TB'
@@ -108,7 +114,7 @@ def get_size_of_files(path_list):
 
 
 def show_time(s: float) -> str:
-    """ return seconds (s) as seconds of H:M:S """
+    """ return seconds (s) as seconds or H:M:S """
     if s < 0.1:
         return f'{s:.5f} seconds'
     elif s < 100:
@@ -139,6 +145,7 @@ def save_data(path, data):
 
 
 def load_data(path):
+    """ load data from path """
     if not os.path.exists(path):
         warn(f'No data file at {path}')
         return []
