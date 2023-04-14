@@ -2,7 +2,7 @@ import argparse
 import time
 
 from tools.utils import show_time, display_objects, warn, success, info, show_file_size
-from tools.plex import get_plex_info, media_objects
+from tools.plex import media_objects
 from tools.library import get_library_records
 from tools.password import create_password
 # from tools.dataframe import get_dataframe
@@ -66,7 +66,7 @@ def main():
         done = True
 
     if args.folders:
-        show_folders(search=search)
+        show_folders(search=search, reverse=reverse)
         done = True
 
     if args.others:

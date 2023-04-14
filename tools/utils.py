@@ -113,16 +113,6 @@ def show_file_size(bytes_, r=1):
     return f'{bytes_} bytes'
 
 
-def get_size_of_files(path_list):
-    try:
-        size = sum(os.path.getsize(path) for path in path_list)
-    except Exception as e:
-        print(f'Failed to get size of path_list: {e}')
-        return
-    print(show_file_size(size))
-    return size
-
-
 def show_time(s: float):
     """ return seconds (s) as seconds or H:M:S """
     if s < 0.1:
@@ -219,7 +209,8 @@ def ss(x):
     return '' if x == 1 else 's'
 
 
-def display_objects(objects, search=None, sort=None, number=5, verbose=False, reverse=False, display='title'):
+def display_objects(objects, search=None, sort=None, number=5,
+                    verbose=False, reverse=False, display='title', maximum=1000):
     """ Universal function to show objects """
     total = len(objects)
     lower = ''
@@ -255,8 +246,8 @@ def display_objects(objects, search=None, sort=None, number=5, verbose=False, re
         text += '.'
         print(text)
 
-        if number > 1000:
-            print('NUMBER OVER 1,000')
+        if number > maximum:
+            print(f'Not displaying over {maximum:,} objects.')
             return objects
 
         for i in range(number):

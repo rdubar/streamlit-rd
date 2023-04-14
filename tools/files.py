@@ -122,7 +122,7 @@ def get_remote_files(ignore=IGNORE_LIST):
     return file_obj
 
 
-def show_folders(obj=None, number=5):
+def show_folders(obj=None, number=5, search=None, reverse=False):
     if obj is None:
         obj = file_objects()
     folders = {}
@@ -133,14 +133,26 @@ def show_folders(obj=None, number=5):
             folders[title] = m
         folders[title].size += x.size
         folders[title].paths.append(x.path)
-    media_objects = sorted(list(folders.values()), key=lambda y: y.size, reverse=True)
+    media_objects = sorted(list(folders.values()), key=lambda y: y.size, reverse=reverse)
     total = len(media_objects)
+    info(f'Showing largest {number:,} of {total:,} folders:')
     if number > total:
         number = total
-    info(f'Showing largest {number:,} of {total:,} folders:')
-    for i in range(number):
-        print(media_objects[i])
-
+    if search:
+        if type(search) is list:
+            search = ' '.join(search)
+        lower = search.lower()
+        matches = []
+        for x in media_objects:
+            if lower in x.title.lower():
+                matches.append(x)
+        info(f'Showing {len(matches)} of {total:,} folders:')
+        [print(x) for x in matches]
+        return matches
+    else:
+        for i in range(number):
+            print(media_objects[i])
+        return media_objects
 
 def show_large_others(obj=None, verbose=False, minimum=500 * 1000 * 1000):
     if obj is None:
