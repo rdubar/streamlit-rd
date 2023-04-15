@@ -10,7 +10,7 @@ import s3fs
 fs = s3fs.S3FileSystem(anon=False)
 filenames = fs.find('rosh-bucket-001')
 
-max = 100
+maximum = 100
 count = 0
 output = ''
 for item in filenames:
@@ -22,6 +22,6 @@ for item in filenames:
     # st.image(fs.url(item), width=100)
     output += f'<img src="{fs.url(item)}" width=100>'
     count += 1
-    if count > max:
+    if count > maximum:
         break
 st.markdown(output, unsafe_allow_html=True)
