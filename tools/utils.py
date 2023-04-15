@@ -266,6 +266,7 @@ def main():
     # get_size_of_files(path_list)
     # read_env()
 
+    print(read_toml())
 
 if __name__ == "__main__":
     main()

@@ -12,7 +12,6 @@ from tools.download_video import get_movies
 # Todo: Additional features
 #   databases as functions, loaded only when necessary
 #   Message facility
-#   AWS demo
 #   Implement big numbers & random text?
 #   Implement TMDB and wikipedia info
 #   Add ish.js clock

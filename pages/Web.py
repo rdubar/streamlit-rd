@@ -2,13 +2,21 @@ import streamlit as st
 import s3fs
 
 # streamlit run pages/Web.py
-# TODO: Streamlit AWS S3 bucket
 
 """
 # Web Services Test
 """
 
 fs = s3fs.S3FileSystem(anon=False)
-output = fs.ls('rosh-bucket-001/media')
+filenames = fs.find('rosh-bucket-001')
 
-output
+output = ''
+for item in filenames:
+    ending = item.split('.')[-1]
+    if ending or 'thumb' in item:
+        lower = ending.lower()
+    if not ending or lower not in ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'tiff', 'webp']:
+        continue
+    # st.image(fs.url(item), width=100)
+    output += f'<img src="{fs.url(item)}" width=100>'
+st.markdown(output, unsafe_allow_html=True)
