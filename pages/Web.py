@@ -23,4 +23,5 @@ for item in filenames:
     output += f'<img src="{fs.url(item)}" width=100>'
     count += 1
     if count > max:
+        break
 st.markdown(output, unsafe_allow_html=True)
