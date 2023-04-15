@@ -6,20 +6,35 @@ from settings import DATAFRAME_PATH
 from tools.utils import show_file_size, sort_by_attrib_value, warn
 
 
-def get_quality(x):
-    if type(x) == int:
-        x = int(x)
-        if x > 1500:
-            x = '4K'
-        elif x >= 800:
-            x = 'HD'
-        elif x > 400:
-            x = 'SD'
-        else:
-            x = 'ZD'
-    if not x or x is None or x == '':
-        return 'UQ'
-    return x.upper()
+def get_quality(x, group=True):
+    """ Return quality based on video height """
+    if group:
+        if type(x) == str and x.isdigit():
+            x = int(x)
+        if type(x) == int:
+            x = int(x)
+            if x > 1500:
+                x = '4K'
+            elif x >= 800:
+                x = 'HD'
+            elif x > 400:
+                x = 'SD'
+            else:
+                x = 'ZD'
+        if not x or x is None or x == '':
+            x = 'UQ'
+        return x.upper()
+    else:
+        n = 0
+        if type(x) == str:
+            lower = x.lower()
+            if '4k' in lower:
+                n = 2160
+            elif 'hd' in lower:
+                n = 1080
+        if not n and x.isdigit():
+            n = int(x)
+        return n
 
 
 def get_dataframe(data, path=DATAFRAME_PATH):

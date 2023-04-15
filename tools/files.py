@@ -122,7 +122,7 @@ def get_remote_files(ignore=IGNORE_LIST):
     return file_obj
 
 
-def show_folders(obj=None, number=5, search=None, reverse=False, verbose=True):
+def show_folders(obj=None, number=5, search=None, reverse=False, verbose=False):
     if obj is None:
         obj = file_objects()
     folders = {}
@@ -157,6 +157,7 @@ def show_folders(obj=None, number=5, search=None, reverse=False, verbose=True):
                 [print(f"{x.split('/')[-1]}") for x in media_objects[i].paths]
         return media_objects
 
+
 def show_large_others(obj=None, verbose=False, minimum=500 * 1000 * 1000):
     if obj is None:
         obj = file_objects()
@@ -173,6 +174,7 @@ def show_large_others(obj=None, verbose=False, minimum=500 * 1000 * 1000):
 
 def process_files(update=False):
     """ get file objects, search if necessary """
+    # TODO: implement verbose for process files
     check_incoming()
     file_obj = get_file_objects(update=update)
     total_size = sum([x.size for x in file_obj])

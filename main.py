@@ -5,7 +5,7 @@ from tools.utils import show_time, display_objects, warn, success, info, show_fi
 from tools.plex import media_objects
 from tools.library import get_library_records
 from tools.password import create_password
-# from tools.dataframe import get_dataframe
+from tools.dataframe import get_dataframe
 from tools.files import process_files, show_folders, show_large_others, file_objects, show_files
 from tools.download_video import get_movies
 
@@ -90,7 +90,7 @@ def main():
     library_records = get_library_records()
 
     records = sorted(media_records + library_records, key=lambda x: x.entry)
-    # df = get_dataframe(records)
+    df = get_dataframe(records)
 
     if not records:
         warn('No Records Found. Aborting.')
