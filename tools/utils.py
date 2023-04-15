@@ -12,7 +12,6 @@ import timeago
 from colorama import init, Fore
 init(autoreset=True)
 
-
 def warn(text):
     """
     :param text: Warning text to print

@@ -8,3 +8,4 @@ LIBRARY_PATH = DATA_DIR + 'library.txt'
 FILE_OBJECTS_PATH = DATA_DIR + 'file_objects.pkl'
 TOML_PATH = ROOT_DIR + '/.streamlit/secrets.toml'
 IGNORE_LIST = ['/Incoming/']
+

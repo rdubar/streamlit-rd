@@ -1,16 +1,15 @@
 import streamlit as st
 import s3fs
 
-# streamlit run pages/Web.py
-
 """
 # Web Services Test
 """
 
+bucket = st.secrets['AWS_STORAGE_BUCKET_NAME']
 fs = s3fs.S3FileSystem(anon=False)
-filenames = fs.find('rosh-bucket-001')
+filenames = fs.find(bucket)
 
-maximum = 100
+maximum = 30
 count = 0
 output = ''
 for item in filenames:
