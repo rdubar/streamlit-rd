@@ -10,6 +10,8 @@ import s3fs
 fs = s3fs.S3FileSystem(anon=False)
 filenames = fs.find('rosh-bucket-001')
 
+max = 100
+count = 0
 output = ''
 for item in filenames:
     ending = item.split('.')[-1]
@@ -19,4 +21,6 @@ for item in filenames:
         continue
     # st.image(fs.url(item), width=100)
     output += f'<img src="{fs.url(item)}" width=100>'
+    count += 1
+    if count > max:
 st.markdown(output, unsafe_allow_html=True)
