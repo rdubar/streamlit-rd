@@ -9,7 +9,7 @@ from tools.utils import show_time
 from settings import LIBRARY_PATH
 
 
-def get_library_records(path=LIBRARY_PATH, verbose=True):
+def get_library_records(path=LIBRARY_PATH, verbose=False):
     """ Return list of media objects from the library list. """
     clock = time.perf_counter()
     if not os.path.exists(path):

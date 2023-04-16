@@ -142,7 +142,8 @@ def save_data(path, data):
         os.rename(path, backup)
     os.rename(temp, path)
     modified = get_modified_time(path, text=True)
-    log(f'Saved {len(data):,} records to {path}, {modified}.')
+    size = show_file_size(os.path.getsize(path))
+    log(f'Saved {len(data):,} records to {path}, {modified} ({size}).')
     return True
 
 
