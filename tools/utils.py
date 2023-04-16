@@ -12,6 +12,7 @@ import timeago
 from colorama import init, Fore
 init(autoreset=True)
 
+
 def warn(text):
     """
     :param text: Warning text to print
@@ -21,18 +22,34 @@ def warn(text):
 
 
 def success(text):
+    """
+    :param text: Success text to print
+    :return: None
+    """
     print(Fore.GREEN + text)
 
 
 def info(text):
+    """
+    :param text: Information text to print
+    :return: None
+    """
     print(Fore.BLUE + text)
 
 
 def log(text):
+    """
+    :param text: General text to print
+    :return: None
+    """
     print(text)
 
 
 def time_ago(date):
+    """
+    :param date: datetime object
+    :return: Seconds, minutes, hours, days, weeks, months, years ago
+    """
     now = datetime.now()
     return timeago.format(date, now)
 
@@ -134,6 +151,12 @@ def save_data(path, data):
     temp = path + '.tmp'
     if os.path.exists(temp):
         os.remove(temp)
+    try:
+        with open(temp, 'wb') as handle:
+            pickle.dump(data, handle)
+    except Exception as e:
+        warn(f'FAILED TO SAVE: {path}: {e}')
+        return False
     with open(temp, 'wb') as handle:
         pickle.dump(data, handle)
     if os.path.exists(backup):
@@ -143,7 +166,7 @@ def save_data(path, data):
     os.rename(temp, path)
     modified = get_modified_time(path, text=True)
     size = show_file_size(os.path.getsize(path))
-    log(f'Saved {len(data):,} records to {path}, {modified} ({size}).')
+    log(f'Saved {len(data):,} records to {path} ({size}), {modified}.')
     return True
 
 
@@ -159,7 +182,8 @@ def load_data(path):
         except Exception as e:
             warn(f'FAILED TO LOAD: {path}: {e}')
             return []
-    log(f'Loaded {len(data):,} records from {path}, last updated {modified}.')
+    size = show_file_size(os.path.getsize(path))
+    log(f'Loaded {len(data):,} records from {path} ({size}), last updated {modified}.')
     return data
 
 
@@ -211,7 +235,7 @@ def ss(x):
 
 def display_objects(objects, search=None, sort=None, number=5,
                     verbose=False, reverse=False, display='title', maximum=1000):
-    """ Universal function to show objects """
+    """ Display a list of objects, with optional search and sort """
     total = len(objects)
     lower = ''
     if search:
@@ -246,15 +270,14 @@ def display_objects(objects, search=None, sort=None, number=5,
         text += '.'
         print(text)
 
-        if number > maximum:
+        if number > maximum and not verbose:
             print(f'Not displaying over {maximum:,} objects.')
-            return objects
-
-        for i in range(number):
-            x = objects[i]
-            print(x)
-            if verbose and hasattr(x, display):
-                print(getattr(x, display))
+        else:
+            for i in range(number):
+                x = objects[i]
+                print(x)
+                if verbose and hasattr(x, display):
+                    print(getattr(x, display))
 
     return objects
 
@@ -262,11 +285,11 @@ def display_objects(objects, search=None, sort=None, number=5,
 def main():
     print("Rog's Tools.")
 
-    # path_list = get_all_files('..')
-    # get_size_of_files(path_list)
-    # read_env()
+    path_list = get_all_files('..')
+    print(show_file_size(sum([os.path.getsize(x) for x in path_list])))
 
     print(read_toml())
+
 
 if __name__ == "__main__":
     main()
