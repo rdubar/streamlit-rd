@@ -1,5 +1,5 @@
 # Rog's Streamlit Project
-Testing out the joy of Streamlit.
+Trying out the joy of Streamlit.
 ```
 python -m pip install --upgrade pip
 pip install streamlit
