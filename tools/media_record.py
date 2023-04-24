@@ -84,7 +84,11 @@ class MediaRecord:
         self.set_search()
 
     def set_search(self):
-        s = str(vars(self)).lower()
+        content = vars(self)
+        # make sure we don't duplicate the previous search information
+        if 'search' in content:
+            del content['search']
+        s = str(content).lower()
         while "' " in s or '  ' in s:
             s = s.replace("'", '').replace('  ', ' ')
         self.search = s
