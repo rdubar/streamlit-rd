@@ -103,10 +103,12 @@ class MediaRecord:
         b = self.bitrate if hasattr(self, 'bitrate') and self.bitrate is not None else ''
         return f'{source:>5}{s:>10} {h:>6} {b:>6}   {self.entry}'
 
-    def get(self, attrib, default=None):
-        if attrib == 'added':
-            default = datetime.min
-        if attrib == 'year':
-            default = 0
+    def get(self, attrib, default=None, force=False):
+        """ Get a value from the object, if it doesn't exist, return the default """
+        if not force:
+            if attrib == 'added':
+                default = datetime.min
+            if attrib == 'year':
+                default = 0
         v = getattr(self, attrib) if hasattr(self, attrib) and getattr(self, attrib) is not None else default
         return v
