@@ -265,8 +265,9 @@ def display_objects(objects, search=None, sort=None, number=5,
         if matches:
             text += f'{matches:,} matches for "{lower}" in '
         text += f'{total:,} records'
+        r = ", reversed" if not reverse else ""
         if sort:
-            text += f' (sorted by: {sort_str})'
+            text += f' (sorted by: {sort_str}{r})'
         text += '.'
         print(text)
 

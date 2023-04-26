@@ -93,7 +93,8 @@ def get_plex_info(update=False, reset=False, verbose=False):
                 print(f'New entry {p.title} ({index})')
             new.append(p)
     c = len(media_dict)
-    info(f'Checked {c:,} records. Found {len(unchanged):,} unchanged, {len(updated):,} updated, {len(new):,} new.')
+    if not reset:
+        info(f'Checked {c:,} records. Found {len(unchanged):,} unchanged, {len(updated):,} updated, {len(new):,} new.')
     new_media_list = unchanged
     to_check = updated + new
     if to_check:
