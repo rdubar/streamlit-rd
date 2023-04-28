@@ -30,6 +30,9 @@ class FileObject:
         if '/' not in self.path:
             return
         parts = self.path.split('/')
+        if len(parts) < 6:
+            # file is not in a media folder
+            return
         self.group = parts[4]  # e.g. incoming or movies
         self.title = parts[5]  # e.g. artist or movie title
         self.filename = self.path[self.path.rfind('/') + 1:]
@@ -178,7 +181,7 @@ def process_files(update=False):
     check_incoming()
     file_obj = get_file_objects(update=update)
     total_size = sum([x.size for x in file_obj])
-    info(f'Found {len(file_obj):,} files totalling {show_file_size(total_size)}.')
+    info(f'Found {len(file_obj):,} files totalling >{show_file_size(total_size)}.')
     return file_objects
 
 
