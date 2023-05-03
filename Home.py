@@ -1,8 +1,7 @@
-# streamlit run Home.py
-
 import streamlit as st
-
 from tools.password import create_password
+
+# streamlit run Home.py
 
 PAGE_TITLE = "Rog's Streamlit Playground"
 st.set_page_config(page_title=PAGE_TITLE, page_icon=':elephant:',
