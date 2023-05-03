@@ -82,11 +82,12 @@ def get_all_files(root_dir: str, verbose=False, ignore=None, purge=None, quiet=F
             delete = False
             skip = False
             path = os.path.join(root, file)
-            for i in ignore:
-                if i in path:
-                    skip = True
-                    break
-            if not skip:
+            if ignore:
+                for i in ignore:
+                    if i in path:
+                        skip = True
+                        break
+            if not skip and purge:
                 for p in purge:
                     if p in path:
                         delete = True
@@ -282,9 +283,18 @@ def display_objects(objects, search=None, sort=None, number=5,
 
     return objects
 
+def strikethru(text):
+    """ return text with strikethru """
+    result = ''
+    for c in text:
+        result = result + c + '\u0336'
+    return result
+
 
 def main():
     print("Rog's Tools.")
+    clear_line(2)
+    print(strikethru('text'))
 
     path_list = get_all_files('..')
     print(show_file_size(sum([os.path.getsize(x) for x in path_list])))

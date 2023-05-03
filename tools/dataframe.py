@@ -21,7 +21,7 @@ def get_quality(x, group=True):
                 x = 'SD'
             else:
                 x = 'ZD'
-        if not x or x is None or x == '':
+        if not x or x is None or x == '' or x=='NONE':
             x = 'UQ'
         return x.upper()
     else:
