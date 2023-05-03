@@ -4,8 +4,6 @@ import pandas as pd
 # streamlit run pages/Media_List.py
 
 PAGE_TITLE = "Rog's Media List"
-st.set_page_config(page_title=PAGE_TITLE, page_icon=None, layout="centered",
-                   initial_sidebar_state="auto", menu_items=None)
 st.title(PAGE_TITLE)
 
 df = pd.read_pickle("data/plex_df.pkl")

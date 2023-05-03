@@ -17,8 +17,6 @@ PAGETITLE = "Strikethru"
 def clear_text():
     st.session_state["text"] = ""
 
-st.set_page_config(page_title=PAGETITLE, page_icon=None, layout="centered",
-                       initial_sidebar_state="auto", menu_items=None)
 
 st.title(PAGETITLE)
 

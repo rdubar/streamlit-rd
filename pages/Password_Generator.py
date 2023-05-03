@@ -4,8 +4,6 @@ from tools.password import create_password
 # streamlit run Password_Generator.py
 
 PAGE_TITLE = "Rog's Password Generator"
-st.set_page_config(page_title=PAGE_TITLE, page_icon=':fish:', layout="centered",
-                       initial_sidebar_state="auto", menu_items=None)
 default_length = 20
 
 def display_value():
