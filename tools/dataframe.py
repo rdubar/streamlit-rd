@@ -21,9 +21,10 @@ def get_quality(x, group=True):
                 x = 'SD'
             else:
                 x = 'ZD'
-        if not x or x is None or x == '' or x=='NONE':
+        x = str(x).upper()
+        if not x in ['4K', 'HD', 'SD', 'ZD', 'UQ']:
             x = 'UQ'
-        return x.upper()
+        return x
     else:
         n = 0
         if type(x) == str:
