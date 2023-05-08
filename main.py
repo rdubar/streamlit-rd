@@ -16,6 +16,8 @@ from tools.download_video import get_movies
 #   Implement TMDB and wikipedia info
 #   Add ish.js clock
 #   Favicon not working
+#   Get Plex Info for non-Plex media
+#   Use database for media info
 
 
 def main():
