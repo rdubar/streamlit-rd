@@ -18,7 +18,7 @@ from tools.download_video import get_movies
 #   Favicon not working
 #   Get Plex Info for non-Plex media
 #   Use database for media info
-
+#   Update named plex titles
 
 def main():
     clock = time.perf_counter()

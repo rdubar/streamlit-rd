@@ -77,6 +77,9 @@ def get_plex_info(update=False, reset=False, verbose=False):
     unchanged = []
     updated = []
     new = []
+    if not plex_records:
+        warn('No Plex records found.')
+        return media__objects
     for p in plex_records:
         index = str(p.ratingKey)
         if index in media_dict:
@@ -114,7 +117,7 @@ def main():
     plex = connect_to_plex()
 
     print('HELLO!', plex)
-    title = 'Jaws'  # Replace with the title you want to search for
+    title = 'alien'  # Replace with the title you want to search for
 
     search_results = plex.search(title)
 
