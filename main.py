@@ -19,6 +19,7 @@ from tools.download_video import get_movies
 #   Get Plex Info for non-Plex media
 #   Use database for media info
 #   Update named plex titles
+#   Downloads: download in temp folder, move to incoming
 
 def main():
     clock = time.perf_counter()
