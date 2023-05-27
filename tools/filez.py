@@ -24,3 +24,7 @@ run_time = timeit.timeit(get_all_files_walk, number=num_runs)
 print(f"The walk function took {run_time} seconds to run over {num_runs} runs.")
 run_time = timeit.timeit(list_test, number=num_runs)
 print(f"The walk list function took {run_time} seconds to run over {num_runs} runs.")
+
+
+def get_cost_estimate(surface, price_per_gallon):
+    """ return cost estimate for painting surface """
