@@ -66,7 +66,7 @@ def get_file_objects(path=FILE_OBJECTS_PATH, update=True):
         return file_obj
     location_info = remote_info()
     if 'remote_directory' in location_info and os.path.exists(location_info['remote_directory']):
-        warn(location_info['remote_directory']+' found locally! Please process directly')
+        warn(location_info['remote_directory'] + ' found locally! Please process directly')
     file_obj = get_remote_files()
     save_data(path, file_obj)
     return file_obj
@@ -100,7 +100,7 @@ def get_remote_files(ignore=IGNORE_LIST):
         if size == 262144:
             continue  # hack to ignore folders
         name = ' '.join(parts[8:])
-        path = directory+'/'+name
+        path = directory + '/' + name
 
         ignore_flag = False
         for check in ignore:
@@ -182,7 +182,7 @@ def process_files(update=False):
     file_obj = get_file_objects(update=update)
     total_size = sum([x.size for x in file_obj])
     info(f'Found {len(file_obj):,} files totalling >{show_file_size(total_size)}.')
-    return file_objects
+    return file_obj
 
 
 def show_files(obj=None, search=None, number=5, sort='size', reverse=False):
@@ -192,7 +192,10 @@ def show_files(obj=None, search=None, number=5, sort='size', reverse=False):
 
 
 def main():
-    process_files(update=True)
+    obj = process_files(update=True)
+
+    sorted_list = sorted(obj, key=lambda x: x.date, reverse=True)
+    print(sorted_list[:10])
 
 
 if __name__ == "__main__":
