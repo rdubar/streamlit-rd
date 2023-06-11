@@ -5,11 +5,14 @@ from random import choice
 
 text = "Randomcase"
 
+
 def randomcase():
     sentence = st.session_state.text if 'text' in st.session_state and st.session_state.text else "Randomcase"
     return ''.join(choice((str.upper, str.lower))(c) for c in sentence)
 
+
 PAGETITLE = "RandomCase"
+
 
 def clear_text():
     st.session_state["text"] = ""
@@ -26,4 +29,3 @@ st.text_input("text", value="", max_chars=None, key="text", type="default",
 st.button('Randomcase')
 
 st.button('Clear', on_click=clear_text)
-

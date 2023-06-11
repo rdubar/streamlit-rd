@@ -3,14 +3,17 @@ from pathlib import Path
 import timeit
 import os
 
+
 def get_all_files_walk(directory='~/'):
     for dirpath, _, filenames in os.walk(directory):
         for f in filenames:
             yield os.path.abspath(os.path.join(dirpath, f))
 
+
 def list_test():
     x = get_all_files_walk()
     return list(x)
+
 
 def get_all_files(directory='~/'):
     return [str(f) for f in Path(directory).rglob('*') if f.is_file()]

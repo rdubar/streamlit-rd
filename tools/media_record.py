@@ -7,7 +7,7 @@ from tools.utils import show_file_size
 def object_clean(obj, remove):
     """ Hack to clean object information for easy plain text search """
     text = str(obj)
-    text = re.sub('[^A-Za-z0-9 ]+', ' ', text).replace(remove, '').replace(", ","")
+    text = re.sub('[^A-Za-z0-9 ]+', ' ', text).replace(remove, '').replace(", ", "")
     return text
 
 

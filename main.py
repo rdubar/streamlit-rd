@@ -9,6 +9,7 @@ from tools.dataframe import get_dataframe
 from tools.files import process_files, show_folders, show_large_others, file_objects, show_files
 from tools.download_video import get_movies
 
+
 # Todo: Additional features
 #   databases as functions, loaded only when necessary
 #   Message facility
@@ -20,6 +21,7 @@ from tools.download_video import get_movies
 #   Use database for media info
 #   Update named plex titles
 #   Downloads: download in temp folder, move to incoming
+#   Interactive Loop option for search
 
 def main():
     clock = time.perf_counter()

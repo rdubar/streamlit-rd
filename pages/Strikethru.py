@@ -1,18 +1,20 @@
 import streamlit as st
-from random import choice
 
 # streamlit run pages/RandomCase.py
 
 text = "Strikethru"
 
+
 def strike():
-    text = st.session_state.text if 'text' in st.session_state and st.session_state.text else "Strikethru"
+    text_ = st.session_state.text if 'text' in st.session_state and st.session_state.text else "Strikethru"
     result = ''
-    for c in text:
+    for c in text_:
         result = result + c + '\u0336'
     return result
 
+
 PAGETITLE = "Strikethru"
+
 
 def clear_text():
     st.session_state["text"] = ""
@@ -29,4 +31,3 @@ st.text_input("text", value="", max_chars=None, key="text", type="default",
 st.button('Strikethru')
 
 st.button('Clear', on_click=clear_text)
-

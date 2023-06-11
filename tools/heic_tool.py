@@ -3,6 +3,7 @@ import sys
 import pyheif
 from PIL import Image
 
+
 def convert_heic_to_jpg(heic_path, jpg_path):
     # Read HEIC image data using pyheif
     heif_file = pyheif.read(heic_path)
@@ -19,16 +20,17 @@ def convert_heic_to_jpg(heic_path, jpg_path):
 
     # Reduce the image size
     basewidth = 500  # change this as required
-    wpercent = (basewidth/float(image.size[0]))
-    hsize = int((float(image.size[1])*float(wpercent)))
+    wpercent = (basewidth / float(image.size[0]))
+    hsize = int((float(image.size[1]) * float(wpercent)))
     img = image.resize((basewidth, hsize), Image.ANTIALIAS)
 
     # Save the image in JPEG format
     img.save(jpg_path, "JPEG")
 
-def process_folder(folder_path):
+
+def process_folder(path):
     # Walk through the folder and its sub-folders
-    for subdir, dirs, files in os.walk(folder_path):
+    for subdir, dirs, files in os.walk(path):
         for filename in files:
             # Check if the file is a HEIC file
             if filename.lower().endswith(".heic"):
@@ -39,6 +41,7 @@ def process_folder(folder_path):
                 jpg_filename = filename.rsplit(".", 1)[0] + ".jpg"
                 jpg_path = os.path.join(subdir, jpg_filename)
                 convert_heic_to_jpg(file_path, jpg_path)
+
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:

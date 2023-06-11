@@ -6,6 +6,7 @@ from tools.password import create_password
 PAGE_TITLE = "Rog's Password Generator"
 default_length = 20
 
+
 def display_value():
     """ return length from the slider, or the default value """
     if 'length' in st.session_state:
@@ -14,11 +15,13 @@ def display_value():
         length = default_length
     return length
 
+
 info = """
 Passwords are cryptographically secure, and contain at least one uppercase, one 
 lowercase, one digit, and one special character. Nothing is stored here, 
 but beware of public computers.
 """
+
 
 def show_page():
     st.title(PAGE_TITLE)
@@ -32,5 +35,6 @@ def show_page():
     st.button('Refresh')
     if st.button('Information'):
         st.info(info)
+
 
 show_page()

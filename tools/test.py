@@ -12,9 +12,10 @@ Attempt to show all attributes in an object recirsively.
 
 obj = plex.search('alien')[0]
 
+
 def process(x, indent=0):
-    print(' '*indent, end='')
-    if type(x)==list:
+    print(' ' * indent, end='')
+    if type(x) == list:
         print(x)
         for y in x:
             process(y)
@@ -27,8 +28,9 @@ def process(x, indent=0):
             t = type(a)
             print(v, t, a)
             if t == list:
-                process(a, indent=indent+1)
+                process(a, indent=indent + 1)
     else:
         print(x, type(x))
+
 
 process(obj)

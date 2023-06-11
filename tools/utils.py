@@ -10,6 +10,7 @@ from settings import TOML_PATH
 
 import timeago
 from colorama import init, Fore
+
 init(autoreset=True)
 
 
@@ -282,6 +283,7 @@ def display_objects(objects, search=None, sort=None, number=5,
                     print(getattr(x, display))
 
     return objects
+
 
 def strikethru(text):
     """ return text with strikethru """
