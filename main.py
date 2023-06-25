@@ -22,6 +22,7 @@ from tools.download_video import get_movies
 #   Update named plex titles
 #   Downloads: download in temp folder, move to incoming
 #   Interactive Loop option for search
+#   TV show & music support. Files in folders, sample size, etc?
 
 def main():
     clock = time.perf_counter()
