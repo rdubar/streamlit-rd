@@ -30,7 +30,7 @@ def connect_to_plex(server_ip=None, port=32400, token=None, secrets=PLEX_INFO, u
     if not token:
         token = secrets['token']
     if url:
-        print(f'Plex URL: http://{server_ip}:{port}{12}?X-Plex-Token={token}')
+        print(f'Plex URL: https://{server_ip}:{port}{12}?X-Plex-Token={token}')
 
     """Connect to the Plex server and return a list of Plex Objects """
     if not (token and port and server_ip):
