@@ -15,10 +15,12 @@ search = st.text_input("search", value="", max_chars=None, key="search", type="d
 
 if search:
     df = df[df['search'].str.contains(search, case=False)]
-    df['year'] = df['year'].astype('str') # fix for bug where year would become int
+    df['year'] = df['year'].astype('str')  # fix for bug where year would become int
+
 
 def clear_text():
     st.session_state["search"] = ""
+
 
 df2 = df.drop(columns=['search'])
 st.dataframe(data=df2, width=None, height=None, use_container_width=True)
@@ -32,5 +34,3 @@ st.bar_chart(years, x=None, y=None)
 quality = df['quality'].value_counts().sort_index()
 st.header('Titles by quality')
 st.bar_chart(quality, x=None, y=None)
-
-

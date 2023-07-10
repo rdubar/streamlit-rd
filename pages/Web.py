@@ -12,6 +12,7 @@ filenames = fs.find(bucket)
 maximum = 30
 count = 0
 output = ''
+lower = ''
 for item in filenames:
     ending = item.split('.')[-1]
     if ending or 'thumb' in item:
