@@ -44,6 +44,7 @@ def connect_to_plex(server_ip=None, port=32400, token=None, secrets=PLEX_INFO, u
     except Exception as e:
         print(f'Failed to connect to Plex: {e}')
         return None
+    clock = time.perf_counter() - clock
     print(f'Connected in {clock:.2f} seconds.')
     return plex
 
