@@ -40,6 +40,7 @@ def main():
     p("-p", "--password", help="generate a secure password", action="store_true")
     p("-r", "--reverse", help="reverse ordering", action="store_true")
     p("-s", "--size", help="show total file sizes", action="store_true")
+    p("-t", "--thumbs", help="show titles with missing thumbnails", action="store_true")
     p("-u", "--update", help="update the library", action="store_true")
     p("-v", "--verbose", help="verbose mode", action="store_true")
     p("-R", "--reset", help="reset the library", action="store_true")
@@ -101,6 +102,15 @@ def main():
         warn('No Records Found. Aborting.')
         return
 
+    if args.thumbs:
+        no_images = [x for x in records if x.plex and not x.thumb ]
+        if not no_images:
+            success('All Plex records have thumbnails.')
+        else:
+            warn(f'{len(no_images):,} Plex records have no thumbnails.')
+            [print(x) for x in no_images]
+            records = no_images
+
     if args.dvd:
         dvds = [x for x in records if 'mpeg2video' in x.search]
         print(f"Found {len(dvds):,} uncompressed dvd titles in {len(records):,} records.")
@@ -131,6 +141,7 @@ def main():
         total = sum([x.size for x in filter_])
         print(f'Known size for {len(filter_):,} of {len(records):,} records: {show_file_size(total)}.')
 
+    clock = time.perf_counter() - clock
     success(f'Completed in {show_time(clock)}.')
 
 
