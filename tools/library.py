@@ -36,8 +36,11 @@ def get_library_records(path=LIBRARY_PATH, verbose=False):
         else:
             title = ' '.join(parts[:-2])
             year = None
-        m = MediaRecord(title=title, year=int(year), source=source, quality=quality, extras=extras)
-        records.append(m)
+        try:
+            m = MediaRecord(title=title, year=int(year), source=source, quality=quality, extras=extras)
+            records.append(m)
+        except Exception as e:
+            print(f'Error creating MediaRecord for {entry}: {e}')
     if len(records) == 0:
         print(f'No media records found in {path}')
     clock = time.perf_counter() - clock
