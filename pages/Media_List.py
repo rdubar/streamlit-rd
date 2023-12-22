@@ -26,11 +26,21 @@ df2 = df.drop(columns=['search'])
 st.dataframe(data=df2, width=None, height=None, use_container_width=True)
 if search: st.button('Clear search', on_click=clear_text)
 
+# titles by year
 years = df.copy()
 years = years['year'].fillna(0).replace('', 0).astype('int64').value_counts().sort_index()
 st.header('Titles by year')
 st.bar_chart(years, x=None, y=None)
 
+# titles by decade:
+decades = df.copy()
+decades['decade'] = decades['year'].fillna(0).replace('', 0).astype('int64')
+decades['decade'] = decades['decade'].apply(lambda x: x - (x % 10))
+decades = decades['decade'].value_counts().sort_index()
+st.header('Titles by decade')
+st.bar_chart(decades, x=None, y=None)
+
+# titles by quality
 quality = df['quality'].value_counts().sort_index()
 st.header('Titles by quality')
 st.bar_chart(quality, x=None, y=None)
